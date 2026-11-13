@@ -489,6 +489,47 @@ ol.steps li { margin: 6px 0; }
   .mod-row .note { grid-column: 1 / -1; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* ---------- hall, town, bonds, note, change list ---------- */
+.wing { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.wing:last-child { border-bottom: 0; padding-bottom: 0; }
+.panel-title + .wing { padding-top: 0; }
+.wing-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.wing-head > b { font-family: var(--f-display); letter-spacing: .8px; color: var(--gold-bright); min-width: 200px; font-size: 14px; font-weight: 600; }
+.wing-head .d-sel { width: auto; min-width: 72px; max-width: 100%; }
+.inl { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.inl > span { font-family: var(--f-display); font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-faint); }
+.wing-desc { margin: 6px 0 0; color: var(--text-dim); font-size: 13px; max-width: 96ch; line-height: 1.45; }
+.wing-desc.spec { padding-left: 12px; border-left: 2px solid var(--line-strong); }
+.wing-desc.spec b { color: var(--text); font-weight: 600; }
+.wing-desc.spec.on { border-left-color: var(--gold); color: var(--text); }
+.wing-desc.faint { color: var(--text-faint); font-size: 12px; }
+.build-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.build-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.panel-title + .build-row { padding-top: 0; }
+.build-row > b { min-width: 240px; font-weight: 600; }
+.build-row .d-in { width: 96px; }
+.build-acts { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.warn-line { margin: 12px 0 0; color: #e8c27a; font-size: 13px; }
+.pill.bad { border-color: rgba(214, 96, 79, .55); color: #f0b3a9; }
+.bond-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 7px 0; border-bottom: 1px dotted rgba(138, 116, 82, .4); }
+.bond-name { flex: 1 1 150px; min-width: 0; font-family: var(--f-ui); font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.bond-row .f-in { width: 68px; }
+.bond-row .f-sel { flex: 1 1 210px; min-width: 0; }
+.bond-row .lean-tag { margin-left: 0; min-width: 84px; text-align: center; }
+.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; }
+.chk input { accent-color: #a67a1e; }
+.bond-warn { flex-basis: 100%; }
+.bond-add { margin-top: 10px; }
+.note-in { display: block; width: 100%; min-height: 72px; resize: vertical; font-family: var(--f-ledger); font-size: 15.5px; line-height: 1.4; padding: 8px 10px; }
+.chg-box { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.chg-box summary { cursor: pointer; font-family: var(--f-display); font-size: 11.5px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--gold); }
+.chg-h { font-family: var(--f-display); font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--text-faint); margin: 14px 0 6px; font-weight: 600; }
+.chg { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 13px; max-height: 340px; overflow: auto; }
+.chg li { color: var(--text-dim); overflow-wrap: anywhere; }
+.chg li b { color: var(--text); font-weight: 600; }
+.chg-old { color: #eda194; }
+.chg-new { color: #a9c79a; }
+@media (max-width: 720px) { .wing-head > b, .build-row > b { min-width: 100%; } .build-acts { margin-left: 0; } }
 </style>
 
 </head>
@@ -1489,7 +1530,12 @@ function makeDemo() {
       stakes: { conviction: 'mend-not-end', flaw: 'cant-say-no', vow: { kind: 'bond', templateId: 'bond-truefriend', name: 'One True Friend', text: 'Has never let anyone all the way in, and half-wishes they could.' } }
     })
   ];
-  const guild = { name: 'The Lantern Oath (example)', day: 12, gold: 640, renown: 3, roster: heroes, recruits: [], fallen: [], stash: [s], ironman: false };
+  const q = forgeItem({ family: FAMILIES.findIndex(f => f[1] === 'luck'), rarity: 'rare', tier: 2, quality: 1.05, nameIdx: 0 });
+  const guild = { name: 'The Lantern Oath (example)', day: 12, gold: 640, renown: 3, roster: heroes, recruits: [], fallen: [], stash: [s], ironman: false,
+    hall: { level: 2, facilities: { infirmary: 1, training: 1, tavern: 1, armoury: 0, stonehouse: 0, beacon: 0, counting: 1, larder: 0, academy: 0 } },
+    league: { divisions: [{ tier: 6, name: 'The Backwater', guilds: [{ id: 'ex_guild', name: 'The Lantern Oath (example)', isPlayer: true, seatOf: 'Lanternford' }] }], seats: [{ name: 'Lanternford', region: 'vale', size: 'town' }] },
+    town: { seat: 'Lanternford', meter: 6, built: [{ id: 'watchtower', year: 1 }, { id: 'shrine', year: 1 }], garrison: [] },
+    bonds: { 'ex_1|ex_3': { value: 34 }, 'ex_1|ex_2': { value: -24 } }, shop: { season: 0, stock: [q] } };
   return { version: 26, guild, sig: sign(JSON.stringify(guild)) };
 }
 
@@ -1552,7 +1598,7 @@ function render() {
 }
 function renderMain() {
   renderSeal(); renderNav();
-  const html = S.view === 'guild' ? viewGuild() : S.view === 'stash' ? viewStash() : S.view === 'comp' ? viewComp() : S.view === 'save' ? viewSave() : viewHeroes();
+  const html = S.view === 'guild' ? viewGuild() : S.view === 'hall' ? viewHall() : S.view === 'town' ? viewTown() : S.view === 'stash' ? (S.stashTab === 'shop' ? viewShop() : viewStash()) : S.view === 'comp' ? viewComp() : S.view === 'save' ? viewSave() : viewHeroes();
   $('#main').innerHTML = (S.file.kind === 'demo' && S.view !== 'comp' ? demoBanner() : '') + html;
 }
 function renderSeal() {
@@ -1564,7 +1610,7 @@ function renderSeal() {
 }
 function renderNav() {
   const gd = S.save ? g() : null;
-  const items = [['guild', t('navGuild'), ''], ['heroes', t('navHeroes'), gd ? (gd.roster || []).length : ''], ['stash', t('navStash'), gd ? (gd.stash || []).length : ''], ['comp', t('navComp'), ''], ['save', t('navSave'), isDirty() ? '●' : '']];
+  const items = [['guild', t('navGuild'), ''], ['hall', t('navHall'), gd && gd.hall ? gd.hall.level : ''], ['town', t('navTown'), gd && townOf(gd) ? (townOf(gd).built || []).length : ''], ['heroes', t('navHeroes'), gd ? (gd.roster || []).length : ''], ['stash', t('navStash'), gd ? (gd.stash || []).length : ''], ['comp', t('navComp'), ''], ['save', t('navSave'), isDirty() ? '●' : '']];
   $('#navList').innerHTML = items.map(([id, label, c]) => `<li><button type="button" data-view="${id}" ${S.view === id ? 'aria-current="page"' : ''}>${esc(label)}<span class="count">${esc(c)}</span></button></li>`).join('');
   const kindTxt = S.file.kind === 'sav' ? t('kindSav') : S.file.kind === 'backup' ? t('kindBackup') : t('kindDemo');
   $('#navNote').innerHTML = S.save ? `${esc(t('fileFrom'))}: ${esc(S.file.name || '-')}<br>${esc(kindTxt)} · v${esc(S.save.version)}<br>${esc(gd.name)} · ${esc(t('day'))} ${esc(gd.day)}` : '';
@@ -1657,6 +1703,8 @@ function sheetHtml(h) {
     ${stakesSection(h)}
     ${gearSection(h, c)}
     ${abilSection(h, c)}
+    ${bondsSection(h)}
+    ${notesSection(h)}
     <div style="display:flex;justify-content:flex-end;margin-top:18px"><button type="button" class="btn-ink red" data-act="revert" ${heroChanged(S.heroKey) ? '' : 'disabled'}>${esc(t('revert'))}</button></div>
   </article>`;
 }
@@ -1779,7 +1827,7 @@ function viewStash() {
     <div class="slot-actions"><button type="button" class="btn small" data-act="stash-edit" data-idx="${i}">${esc(t('edit'))}</button><button type="button" class="btn small" data-act="stash-dup" data-idx="${i}">${esc(t('dup'))}</button>
     <button type="button" class="btn small danger" data-act="stash-del" data-idx="${i}">${esc(S.confirmDel === i ? t('confirmDel') : t('del'))}</button></div></div>`).join('');
   return `<div class="view-head"><div><h1 class="view-title">${esc(t('stashTitle'))}</h1><p class="view-lede">${esc(t('stashLede'))}</p></div><button class="btn gold" type="button" data-act="stash-new">${esc(t('newItem'))}</button></div>
-  ${st.length ? `<div class="items-grid">${cards}</div>` : `<p class="muted">${esc(t('stashEmpty'))}</p>`}`;
+  ${stashTabs()}${st.length ? `<div class="items-grid">${cards}</div>` : `<p class="muted">${esc(t('stashEmpty'))}</p>`}`;
 }
 
 /* ----- item modal ----- */
@@ -1868,9 +1916,9 @@ function pickModal() {
 
 /* ----- compendium ----- */
 function viewComp() {
-  const order = ['attrs', 'classes', 'races', 'traits', 'stakes', 'synergies', 'items', 'progress', 'limits'];
+  const order = ['attrs', 'classes', 'races', 'traits', 'stakes', 'synergies', 'items', 'hall', 'progress', 'limits'];
   const tabs = order.map(k => `<button type="button" class="tab" role="tab" data-tab="${k}" aria-selected="${S.compTab === k}">${esc(T[S.lang].tabs[k])}</button>`).join('');
-  const body = { attrs: compAttrs, classes: compClasses, races: compRaces, traits: compTraits, stakes: compStakes, synergies: compSyn, items: compItems, progress: compProgress, limits: compLimits }[S.compTab]();
+  const body = { attrs: compAttrs, classes: compClasses, races: compRaces, traits: compTraits, stakes: compStakes, synergies: compSyn, items: compItems, hall: compHall, progress: compProgress, limits: compLimits }[S.compTab]();
   return `<div class="view-head"><div><h1 class="view-title">${esc(t('compTitle'))}</h1><p class="view-lede">${esc(t('compLede'))}</p></div></div><div class="tabs" role="tablist">${tabs}</div><div id="compBody">${body}</div>`;
 }
 function compStakes() {
@@ -2051,10 +2099,11 @@ function viewSave() {
     if ((o.stash || []).length !== (n.stash || []).length) items.push(`${t('stashDiff')}: ${(o.stash || []).length} → ${(n.stash || []).length}`);
     if (o.name !== n.name) items.push(`${t('gName')}: ${o.name} → ${n.name}`);
     if (o.renown !== n.renown) items.push(`${t('gRenown')}: ${o.renown} → ${n.renown}`);
-    changes = isDirty() ? `<ul class="warns" style="color:var(--text)">${(items.length ? items : [pl ? 'Inne drobne zmiany' : 'Other small changes']).map(x => `<li style="color:var(--text-dim)">${esc(x)}</li>`).join('')}</ul>` : `<p class="muted">${esc(t('noChanges'))}</p>`;
+    changes = isDirty() ? changesHtml(o, n, items) : `<p class="muted">${esc(t('noChanges'))}</p>`;
   }
   const warns = S.save ? tidyGuild(JSON.parse(JSON.stringify(g()))) : [];
-  const warnTxt = w => w[0] === 'paMax' ? `${w[1]}: PA ${w[2]} > 200` : w[0] === 'caPa' ? `${w[1]}: CA ${w[2]} > PA ${w[3]}` : w[0] === 'level' ? `${w[1]}: ${t('level')} ${w[2]}` : `${w[1]}: ${w[2]} = ${w[3]} (1-20)`;
+  if (S.save) addonWarnings(g()).forEach(x => warns.push(['txt', x]));
+  const warnTxt = w => w[0] === 'txt' ? w[1] : w[0] === 'paMax' ? `${w[1]}: PA ${w[2]} > 200` : w[0] === 'caPa' ? `${w[1]}: CA ${w[2]} > PA ${w[3]}` : w[0] === 'level' ? `${w[1]}: ${t('level')} ${w[2]}` : `${w[1]}: ${w[2]} = ${w[3]} (1-20)`;
   const savName = (/\.sav$/i.test(S.file.name) ? S.file.name : 'slot1.sav');
   const stepsBackup = pl
     ? [`Kliknij „${t('dlBackup')}”.`, 'W grze: Settings → Restore… i wskaż pobrany plik. Zastępuje bieżącą księgę (zablokowanej nie przywrócisz, najpierw ją odblokuj).', 'Albo na ekranie tytułowym: Load a Ledger → From a backup file (potrzebny wolny slot).']
@@ -2322,11 +2371,681 @@ function focusBack(id) { if (!id) return; const el = document.getElementById(id)
 function closeModal() { S.modal = null; renderModal(); }
 function saveItemModal() {
   const m = S.modal; const it = m.item; const gd = g();
-  if (m.target.kind === 'stash') gd.stash[m.target.idx] = it;
+  if (m.target.kind === 'shop') ensureShop(gd).stock[m.target.idx] = it;
+  else if (m.target.kind === 'new-shop') ensureShop(gd).stock.push(it);
+  else if (m.target.kind === 'stash') gd.stash[m.target.idx] = it;
   else if (m.target.kind === 'new-stash') { gd.stash = gd.stash || []; gd.stash.push(it); }
   else { const h = heroByKey(m.target.hero); h.equipment = h.equipment || {}; h.equipment[m.target.slot] = it; }
   S.modal = null; render();
 }
+/* ---------------- hall, town, bonds, notes, shop and the change list ---------------- */
+/* Game data below is read from the game's own files (build of 13 November 2026, save version 26). English texts are the game's own. */
+const HT = {"wings":[["infirmary","Infirmary","Where the weary sleep and the wounded are tended. Fatigue lifts more than twice as fast in a full wing, and wounds close sooner, sooner still with the Stillroom's remedies. But a body has its pace: a ten-day wound still takes four days, and a grave one always runs at least 50% of its course."],["training","Training Ground","More benches in the Training Yard (4, 6, then 8), faster Train and Hone on each, and a small daily ability gain for everyone at home. Each level also lets one more Greenhorn or Rising delver be taught while they Train."],["tavern","Tavern Wing","More names on the recruit board at each level. Scrying a rival's delver costs 15% less at level 1 and 30% less from level 2, and at level 3 every delver on the Market's Buying board comes already scried."],["armoury","The Armoury","Keeps more gear free of storage charges, sells it for more, and sets up the Forge: a bench from the first level, finer and faster work with each."],["stonehouse","The Stonehouse","Each delver of yours who dies leaves a Witness Stone here. Each stone, up to 12, improves the names on the Tavern board, more at each level and with a Loremaster. A delve in the same kind of place your delvers died in reads more clearly in the Scrying Pool (up to three deaths count for each kind). Each stone adds to upkeep."],["beacon","The Beacon","A brazier the realm can see. Before a muster you see how many guilds will answer, more clearly with each level. Each level adds 50% to the renown a guild earns for marching to a war, and 50% to what it loses for staying home, more with an Envoy in the seat."],["counting","The Counting House","Every guild starts at level 1. The strongbox holds 2 paydays of wages a level and pays 1%, 1.5% or 2% interest each payday, more with a Quartermaster in post. It pays the wages the treasury cannot, and what it holds above one payday's wages can pay other costs if you agree. Each level gives a guild in debt one more payday before a delver asks to be put on the Market. Take coin out at any time."],["larder","The Stillroom","Without a Stillroom, delves bring home nothing to eat or brew. With one, they bring home stores from the region, up to the shelf's size. Each delve feeds the party from it (one store for every two delvers), and they take less fatigue and stress; each wounded delver it tends uses a store a day and mends about twice as fast."],["academy","The Academy","For aspirants only, the unsworn youngsters of the yearly intake. A hall without one still takes its intake. Each level takes one more aspirant a year, grows them faster (1.75 times at level 1, up to 3.25 times at level 3), and adds 2 points to the 3% chance of a generational talent. A Master-at-Arms, or a Mentor in one of its chairs, teaches faster still."]],"specs":[["stables","tavern","The Stables","Horses for the road. Quests, escorts and the roads to a vault take 25% fewer days there and back. Delves are not touched."],["inn","tavern","The Inn","Rooms for your own: two more beds in the hall. The rooms left over are let to travellers for a little gold every payday, more in a bigger town."],["surgeons","infirmary","Surgeons' Ward","Surgeons on call. One in four delvers who would die in a delve or a Trial is carried home alive, gravely wounded."],["longward","infirmary","Long Ward","Beds for the long cure. Wounds may close up to three times as fast, up from two and a half, and fatigue lifts sooner. Its dressings go into the dark too: about one in seven delvers who would die there comes home instead, with a wound that will mend."],["sparring","training","Sparring Ring","Two more benches in the Training Yard, ten in all."],["mastersyard","training","Master's Yard","Honing and training on the benches run faster: 1.7 times the plain rate, up from 1.45."],["masterforge","armoury","Master Forge","The bench works finer and faster: better pieces, in five days."],["quartermaster","armoury","Quartermaster's Store","Sixteen more pieces kept free of charge, and gear sells for 10% more of its worth."],["deeplore","stonehouse","Deep Lore","The stones are read more closely. Their pull on who comes to the Tavern board is 50% stronger."],["wallofnames","stonehouse","Wall of Names","Every name cut where the hall can see it. A death costs the friends left behind 50% less morale and stress."],["warhorn","beacon","War Horn","Marching to a muster earns 50% more renown."],["musterroll","beacon","Muster Roll","Before a muster you see which guilds will march, and holding back costs 50% less. Marching to a muster earns 50% more gold."],["vault","counting","The Vault","The reserve holds 50% more, and pays 0.5% more interest every payday."],["credit","counting","Letters of Credit","Every new level of the hall or a wing costs 15% less, and a guild in debt gets two more paydays before a delver asks to be put on the Market."],["greatlarder","larder","Great Larder","The shelf holds 60, not 44, and rations take 48% off what a delve costs the party, not 36%."],["stall","larder","The Stall","A stall in town. Every payday it sells each store above half the shelf, at 10 gold a store."],["berths","academy","More Berths","Two more aspirant berths every year."],["bloodlines","academy","Bloodlines","Adds 4% to the chance of a generational talent at the year's intake."]],"specOf":{"tavern":["stables","inn"],"infirmary":["surgeons","longward"],"training":["sparring","mastersyard"],"armoury":["masterforge","quartermaster"],"stonehouse":["deeplore","wallofnames"],"beacon":["warhorn","musterroll"],"counting":["vault","credit"],"larder":["greatlarder","stall"],"academy":["berths","bloodlines"]},"capstones":[["beds","The Long Dormitory","Room for three more delvers, beyond what the hall's size allows."],["academy","The Masters' Chair","Aspirants at the Academy grow four times as fast as a delver at home, up from three and a quarter times. The chance of a generational talent at each intake also rises by 2%."],["yard","The Proving Ground","Multiplies the whole Training Yard by 1.15: Train and Hone run 15% faster on top of the wing, the trainers and the guildmaster."],["stillroom","The Deep Cellar","Twenty more stores on the shelves, and a fed party is spared 6% more of a delve's fatigue and stress."]],"hallNames":["Backwater Shack","Modest Guild","Established Lodge","Grand Keep","Stronghold","Citadel"],"wingOrder":["infirmary","training","tavern","armoury","stonehouse","beacon","counting","larder","academy"],"townBase":{"watchtower":["Watchtower","A threat to the town is seen six days sooner, and escorts from your region are ambushed 33% less often.","A threat to the town is seen nine days sooner, and escorts from your region are ambushed 50% less often.",null],"townhall":["Town Hall","One more seat on your Guild Council, and on every other guild's here.","Raised to a City Hall: another seat on your Guild Council, and on every rival's here. Only a city can raise it.",null],"shrine":["Shrine","Nerves settle faster at home: stress lifts 25% sooner.","Nerves settle faster at home: stress lifts 38% sooner.",null],"militia":["Militia Yard","The town keeps a militia: two more to its defence.","The town keeps a larger militia: three more to its defence.",null],"memorial":["Memorial","A death costs the friends left behind 25% less.","A death costs the friends left behind 38% less.",null],"walls":["Walls","The town stands behind a wall: three more to its defence.","Higher walls: five more to the town's defence.",null],"market":["Market Hall","The Quartermaster's rack carries two more pieces, and its rarer grades turn up more often.","The Quartermaster's rack carries three more pieces, and its rarer grades turn up more often still.",null],"bathhouse":["Bathhouse","Fatigue lifts 25% faster at home. It matters: past 45 fatigue, a delver hits and heals weaker, up to 12% at 78.","Fatigue lifts 38% faster at home. It matters: past 45 fatigue, a delver hits and heals weaker, up to 12% at 78.",null],"coachinn":["Coaching Inn","Every quest out of your own town or its region pays 15% more.","Every quest out of your own town or its region pays 22% more.",null],"bakery":["Bakery","Fresh bread for everyone at home: a point of morale every payday.","Fresh bread for everyone at home: two points of morale every payday.","Fresh bread for everyone at home: three points of morale every payday."],"gatehouse":["Gatehouse","When a threat is too strong for the town's defence, the gate still holds the inner streets: half the time none of your buildings is damaged, and those on the wall are wounded half as often.","When a threat is too strong for the town's defence, the gate still holds the inner streets: three times in four none of your buildings is damaged, and those on the wall are wounded a quarter as often.","When a threat is too strong for the town's defence, the gate still holds the inner streets: nine times in ten none of your buildings is damaged, and those on the wall are wounded a tenth as often."],"foundling":["Foundling House","A child left at the gate is raised here as a ward of the guild: one every third year, starting the year after this is built. Like any ward, they come to the intake six years later.","A child left at the gate is raised here as a ward of the guild: one every other year. Like any ward, they come to the intake six years later.","A child left at the gate is raised here as a ward of the guild: one every year. Like any ward, they come to the intake six years later."],"granary":["Granary","Two stores reach the Stillroom every payday, while its shelf has room.","Three stores reach the Stillroom every payday, while its shelf has room.",null],"scriptorium":["Scriptorium","One rival delver a season can be scried for nothing.","Two rival delvers a season can be scried for nothing.","Three rival delvers a season can be scried for nothing."],"standard":["Standard Hall","The guild's colours are kept here, and one delver may carry them as your Flagbearer. When the Flagbearer delves with a party, while they stand that party hits a little harder, guards a little better, and its nerve holds firmer when the fight turns against them. The colours pass to someone new at most once a season. Name your Flagbearer on a delver's sheet, under Post.","The guild's colours are kept here, and one delver may carry them as your Flagbearer. When the Flagbearer delves with a party, while they stand that party hits harder still, guards better still, and its nerve holds firmer when the fight turns against them. The colours pass to someone new at most once a season.","The guild's colours are kept here, and one delver may carry them as your Flagbearer. When the Flagbearer delves with a party, while they stand that party hits harder again, guards better again, and its nerve holds firmer when the fight turns against them. The colours pass to someone new at most once a season."],"lantern":["Lantern for the Lost","A light kept for the missing, with their names beside it: each season's chance that a lost delver turns up runs 25% higher.","A light kept for the missing, with their names beside it: each season's chance that a lost delver turns up runs 38% higher.",null]},"townSpecial":{"statue":["Statue","Honours one delver, chosen once it is built: anyone who served the guild, living, retired or fallen."],"carvers":["Carvers' Yard","Carves each year's headline into the town, from the year it is built. Each year carved adds 2 to your guild's stature, up to 10."],"vale-table":["The Long Table","Travellers and delvers eat at one table, and the Vale sets a very good one."],"vale-green":["The Crowning Green","Where the realm gathers once a year to crown someone, and the stalls stay up after."],"iron-shift":["The Third Shift","A shift that never sleeps: someone is always at the door and in the stores."],"iron-cold":["Cold Store","Dug deep enough that the cold keeps whatever is laid down in it."],"elder-grove":["The Answering Grove","Where a felling is answered for, and the dead are spoken of."],"elder-deadfall":["Deadfall Yard","The town builds only from what has already fallen, and keeps it here."],"marches-fires":["Watch Fires","Fires along the wall, lit before the horn sounds and answered by it."],"marches-kilns":["Ash Kilns","Ash makes good mortar, and the Marches never run short: what the wall does not take goes to market."],"peaks-rope":["The Rope Walk","Where the guides keep their ropes, and count out and count back whoever goes."],"peaks-shelter":["Snow Shelter","Stone and packed snow over a fire that is never let go out."],"reach-bell":["Tide Bell","Rung at the turn of every spring tide, since the tide took the towns below."],"reach-salt":["Salt House","What the sea still gives, dried, packed and sold up the coast."],"moor-round":["Ash-Wardens' Round","The wardens walk the moor and touch nothing on it."],"moor-waystation":["Bone Road Waystation","The last fire before the road crosses the field where the crown fell."]},"townCost":{"watchtower":{"needs":0,"gold":900,"labour":16,"materials":2},"shrine":{"needs":0,"gold":900,"labour":16,"materials":2},"militia":{"needs":0,"gold":900,"labour":16,"materials":2},"memorial":{"needs":0,"gold":900,"labour":16,"materials":2},"walls":{"needs":3,"gold":1500,"labour":24,"materials":3},"market":{"needs":3,"gold":1500,"labour":24,"materials":3},"bathhouse":{"needs":3,"gold":1500,"labour":24,"materials":3},"coachinn":{"needs":3,"gold":1500,"labour":24,"materials":3},"granary":{"needs":3,"gold":1500,"labour":24,"materials":3},"bakery":{"needs":3,"gold":1500,"labour":24,"materials":3},"gatehouse":{"needs":3,"gold":1500,"labour":24,"materials":3},"foundling":{"needs":3,"gold":1500,"labour":24,"materials":3},"scriptorium":{"needs":6,"gold":2200,"labour":32,"materials":4},"signature":{"needs":8,"gold":3000,"labour":40,"materials":5},"statue":{"needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["shrine"]},"lantern":{"needs":3,"gold":1500,"labour":24,"materials":3},"carvers":{"needs":3,"gold":1500,"labour":24,"materials":3},"townhall":{"needs":3,"gold":1500,"labour":24,"materials":3},"standard":{"needs":3,"gold":1500,"labour":24,"materials":3},"vale-table":{"region":"vale","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["bathhouse","coachinn"]},"vale-green":{"region":"vale","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["market","shrine"]},"iron-shift":{"region":"ironhold","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["militia","granary"]},"iron-cold":{"region":"ironhold","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["granary","market"]},"elder-grove":{"region":"elderwood","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["shrine","memorial"]},"elder-deadfall":{"region":"elderwood","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["walls","granary"]},"marches-fires":{"region":"ashen-marches","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["watchtower","militia"]},"marches-kilns":{"region":"ashen-marches","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["walls","market"]},"peaks-rope":{"region":"riven-peaks","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["watchtower","coachinn"]},"peaks-shelter":{"region":"riven-peaks","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["bathhouse","shrine"]},"reach-bell":{"region":"pale-reach","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["watchtower","walls"]},"reach-salt":{"region":"pale-reach","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["market","coachinn"]},"moor-round":{"region":"cindermoor","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["militia","memorial"]},"moor-waystation":{"region":"cindermoor","needs":3,"gold":1500,"labour":24,"materials":3,"worksAs":["coachinn","bathhouse"]}},"townOrder":["watchtower","shrine","militia","memorial","walls","market","bathhouse","coachinn","granary","bakery","gatehouse","foundling","statue","lantern","carvers","standard","vale-table","vale-green","iron-shift","iron-cold","elder-grove","elder-deadfall","marches-fires","marches-kilns","peaks-rope","peaks-shelter","reach-bell","reach-salt","moor-round","moor-waystation","scriptorium","townhall","signature"],"townRegion":{"vale":{"meter":"Trade","sig":["Hostel","The safest sleep in the realm, as the Vale says of itself: fatigue lifts 50% faster at home."],"insteadOf":null,"forbidden":[],"renamed":{}},"ironhold":{"meter":"Halls dug","sig":["Forge That Never Goes Cold","Your Forge works a day faster, and its pieces come out 5% finer."],"insteadOf":null,"forbidden":[],"renamed":{}},"elderwood":{"meter":"The wood's regard","sig":["Sapling Road","A sapling planted for every delver lost. A death costs the friends left behind 50% less."],"insteadOf":"memorial","forbidden":[],"renamed":{}},"ashen-marches":{"meter":"Risen from ash","sig":["Muster Horn","The town has always been first to answer a threat, so its walls count double toward its defence."],"insteadOf":null,"forbidden":[],"renamed":{"walls":["Ash Wall","Three more to the town's defence. Ash makes good mortar, and the Marches never run short: the wall costs 25% less gold to build and half the work to mend."]},"ashMortar":true},"riven-peaks":{"meter":"The tally","sig":["Tally Stone","Every name counted out is counted back here. A death costs the friends left behind 50% less."],"insteadOf":"memorial","forbidden":[],"renamed":{}},"pale-reach":{"meter":"Above the tide","sig":["Sea Wall and its Lamps","The spring tide is held back: it can no longer reach what the town has built. Two more to its defence."],"insteadOf":null,"forbidden":["granary"],"renamed":{"memorial":["High Ground","The dead are buried high. A death costs the friends left behind 25% less."]}},"cindermoor":{"meter":"The fire kept","sig":["Fire Circle","A place at the fire for everyone who comes home: a point of morale every other day at home."],"insteadOf":null,"forbidden":["granary"],"renamed":{}}},"sizes":{"order":["hold","town","city","great"],"plots":{"hold":4,"town":6,"city":8,"great":10},"purse":{"hold":0.75,"town":0.9,"city":1.1,"great":1.35},"label":{"great":"Great City","city":"City","town":"Town","hold":"Hold"}},"bondLabels":{"close":"Close friend","friend":"Friend","neutral":"Acquaintance","rival":"Rival","feud":"Feud"}};
+/* Polish descriptions for the hall and the town (translated from the game's English). Names stay in English, as in the game. */
+const PL3 = {
+  wings: {
+    infirmary: 'Tu śpią zmęczeni i leczą się ranni. W pełnym skrzydle zmęczenie schodzi ponad dwa razy szybciej, a rany zamykają się wcześniej, jeszcze wcześniej z lekami ze Stillroom. Ciało ma jednak swoje tempo: dziesięciodniowa rana i tak trwa cztery dni, a ciężka zawsze co najmniej połowę swojego czasu.',
+    training: 'Więcej ławek w Training Yard (4, 6, potem 8), szybszy Train i Hone na każdej oraz mały dzienny przyrost zdolności dla wszystkich w domu. Każdy poziom pozwala też uczyć o jednego bohatera Greenhorn lub Rising więcej, gdy sam trenuje.',
+    tavern: 'Więcej nazwisk na tablicy rekrutów z każdym poziomem. Scrying bohatera rywala kosztuje 15% mniej na poziomie 1 i 30% mniej od poziomu 2, a na poziomie 3 każdy bohater z tablicy Buying na Market jest już prześwietlony.',
+    armoury: 'Trzyma więcej sprzętu bez opłat za przechowanie, sprzedaje go drożej i uruchamia Forge: ławę od pierwszego poziomu, z każdym kolejnym praca jest lepsza i szybsza.',
+    stonehouse: 'Każdy Twój bohater, który zginie, zostawia tu Witness Stone. Każdy kamień, do 12, poprawia nazwiska na tablicy Tavern, mocniej z każdym poziomem i z Loremasterem. Wyprawa w miejsce tego samego rodzaju, w jakim ginęli Twoi bohaterowie, czyta się wyraźniej w Scrying Pool (liczą się do trzech śmierci na rodzaj). Każdy kamień podnosi koszty utrzymania.',
+    beacon: 'Ogień, który widzi całe królestwo. Przed muster widzisz, ile gildii odpowie, tym wyraźniej, im wyższy poziom. Każdy poziom dodaje 50% do renomy za wymarsz na wojnę i 50% do straty za zostanie w domu, więcej z Envoyem na stanowisku.',
+    counting: 'Każda gildia zaczyna od poziomu 1. Skarbiec mieści 2 wypłaty pensji na poziom i daje 1%, 1,5% albo 2% odsetek przy każdej wypłacie, więcej z Quartermasterem. Pokrywa pensje, na które nie stać kasy, a nadwyżka ponad jedną wypłatę może opłacić inne koszty, jeśli się zgodzisz. Każdy poziom daje zadłużonej gildii jedną wypłatę więcej, zanim bohater poprosi o wystawienie na Market. Złoto możesz wyjąć w każdej chwili.',
+    larder: 'Bez Stillroom wyprawy nie przynoszą nic do jedzenia ani warzenia. Ze Stillroom przynoszą zapasy z regionu, do pojemności półki. Każda wyprawa karmi z niej drużynę (jeden zapas na dwóch bohaterów), więc łapią mniej zmęczenia i stresu; każdy ranny pod opieką zużywa zapas dziennie i leczy się mniej więcej dwa razy szybciej.',
+    academy: 'Tylko dla aspirantów, czyli niezaprzysiężonej młodzieży z corocznego naboru. Hall bez Akademii też przyjmuje nabór. Każdy poziom przyjmuje jednego aspiranta rocznie więcej, rozwija ich szybciej (1,75 raza na poziomie 1, do 3,25 raza na poziomie 3) i dodaje 2 punkty do 3% szansy na talent pokoleniowy. Master-at-Arms albo Mentor na jednym z jej krzeseł uczy jeszcze szybciej.'
+  },
+  specs: {
+    stables: 'Konie na drogę. Zadania, eskorty i drogi do skarbców trwają 25% mniej dni w obie strony. Wypraw to nie dotyczy.',
+    inn: 'Pokoje dla swoich: dwa łóżka więcej w Hallu. Pozostałe pokoje są wynajmowane podróżnym za trochę złota przy każdej wypłacie, więcej w większym mieście.',
+    surgeons: 'Chirurdzy na wezwanie. Jeden na czterech bohaterów, którzy zginęliby na wyprawie albo w Trial, wraca do domu żywy, ciężko ranny.',
+    longward: 'Łóżka na długie leczenie. Rany mogą zamykać się do trzech razy szybciej (zamiast dwóch i pół), a zmęczenie schodzi wcześniej. Opatrunki idą też w ciemność: mniej więcej jeden na siedmiu bohaterów, którzy by tam zginęli, wraca z raną, która się zagoi.',
+    sparring: 'Dwie ławki więcej w Training Yard, razem dziesięć.',
+    mastersyard: 'Hone i Train na ławkach idą szybciej: 1,7 raza zwykłego tempa zamiast 1,45.',
+    masterforge: 'Ława pracuje lepiej i szybciej: lepsze przedmioty, w pięć dni.',
+    quartermaster: 'Szesnaście sztuk więcej trzymanych za darmo, a sprzęt sprzedaje się za 10% więcej swojej wartości.',
+    deeplore: 'Kamienie są czytane uważniej. Ich wpływ na to, kto trafia na tablicę Tavern, jest o 50% silniejszy.',
+    wallofnames: 'Każde imię wykute tam, gdzie widzi je cały Hall. Śmierć kosztuje pozostałych przyjaciół 50% mniej morale i stresu.',
+    warhorn: 'Wymarsz na muster daje 50% więcej renomy.',
+    musterroll: 'Przed muster widzisz, które gildie wyruszą, a wstrzymanie się kosztuje 50% mniej. Wymarsz na muster daje 50% więcej złota.',
+    vault: 'Rezerwa mieści 50% więcej i daje 0,5% więcej odsetek przy każdej wypłacie.',
+    credit: 'Każdy nowy poziom Hallu albo skrzydła kosztuje 15% mniej, a zadłużona gildia dostaje dwie wypłaty więcej, zanim bohater poprosi o wystawienie na Market.',
+    greatlarder: 'Półka mieści 60 zamiast 44, a racje zdejmują 48% tego, co wyprawa kosztuje drużynę, zamiast 36%.',
+    stall: 'Stragan w mieście. Przy każdej wypłacie sprzedaje każdy zapas ponad połowę półki, po 10 złota za sztukę.',
+    berths: 'Dwa miejsca dla aspirantów więcej każdego roku.',
+    bloodlines: 'Dodaje 4% do szansy na talent pokoleniowy w corocznym naborze.'
+  },
+  caps: {
+    beds: 'Miejsce dla trzech bohaterów więcej, ponad to, na co pozwala wielkość Hallu.',
+    academy: 'Aspiranci w Akademii rozwijają się cztery razy szybciej niż bohater w domu (zamiast trzech i ćwierć raza). Szansa na talent pokoleniowy przy każdym naborze rośnie też o 2%.',
+    yard: 'Mnoży cały Training Yard przez 1,15: Train i Hone idą 15% szybciej, ponad skrzydło, trenerów i mistrza gildii.',
+    stillroom: 'Dwadzieścia zapasów więcej na półkach, a nakarmiona drużyna oszczędza 6% więcej zmęczenia i stresu z wyprawy.'
+  },
+  town: {
+    watchtower: ['Zagrożenie dla miasta widać sześć dni wcześniej, a eskorty z Twojego regionu wpadają w zasadzki o 33% rzadziej.', 'Zagrożenie dla miasta widać dziewięć dni wcześniej, a eskorty z Twojego regionu wpadają w zasadzki o 50% rzadziej.'],
+    townhall: ['Jedno miejsce więcej w Twojej Guild Council i w radzie każdej innej gildii z tego miasta.', 'Podniesiony do City Hall: kolejne miejsce w Twojej Guild Council i w radzie każdego rywala stąd. Tylko miasto wielkości City może go podnieść.'],
+    shrine: ['Nerwy uspokajają się w domu szybciej: stres schodzi 25% wcześniej.', 'Nerwy uspokajają się w domu szybciej: stres schodzi 38% wcześniej.'],
+    militia: ['Miasto trzyma milicję: dwa więcej do jego obrony.', 'Miasto trzyma większą milicję: trzy więcej do jego obrony.'],
+    memorial: ['Śmierć kosztuje pozostałych przyjaciół 25% mniej.', 'Śmierć kosztuje pozostałych przyjaciół 38% mniej.'],
+    walls: ['Miasto stoi za murem: trzy więcej do jego obrony.', 'Wyższe mury: pięć więcej do obrony miasta.'],
+    market: ['Stojak Quartermastera ma dwie sztuki więcej, a rzadsze klasy trafiają się częściej.', 'Stojak Quartermastera ma trzy sztuki więcej, a rzadsze klasy trafiają się jeszcze częściej.'],
+    bathhouse: ['Zmęczenie schodzi w domu 25% szybciej. To ważne: powyżej 45 zmęczenia bohater bije i leczy słabiej, do 12% przy 78.', 'Zmęczenie schodzi w domu 38% szybciej. To ważne: powyżej 45 zmęczenia bohater bije i leczy słabiej, do 12% przy 78.'],
+    coachinn: ['Każde zadanie z Twojego miasta albo jego regionu płaci 15% więcej.', 'Każde zadanie z Twojego miasta albo jego regionu płaci 22% więcej.'],
+    bakery: ['Świeży chleb dla wszystkich w domu: punkt morale przy każdej wypłacie.', 'Świeży chleb dla wszystkich w domu: dwa punkty morale przy każdej wypłacie.', 'Świeży chleb dla wszystkich w domu: trzy punkty morale przy każdej wypłacie.'],
+    gatehouse: ['Gdy zagrożenie jest za silne dla obrony miasta, brama i tak trzyma wewnętrzne ulice: w połowie przypadków żaden Twój budynek nie zostaje uszkodzony, a ci na murze są ranieni o połowę rzadziej.', 'Gdy zagrożenie jest za silne dla obrony miasta, brama i tak trzyma wewnętrzne ulice: trzy razy na cztery żaden Twój budynek nie zostaje uszkodzony, a ci na murze są ranieni cztery razy rzadziej.', 'Gdy zagrożenie jest za silne dla obrony miasta, brama i tak trzyma wewnętrzne ulice: dziewięć razy na dziesięć żaden Twój budynek nie zostaje uszkodzony, a ci na murze są ranieni dziesięć razy rzadziej.'],
+    foundling: ['Dziecko zostawione pod bramą wychowuje się tu jako podopieczny gildii: jedno co trzeci rok, od roku po budowie. Jak każdy podopieczny, trafia do naboru sześć lat później.', 'Dziecko zostawione pod bramą wychowuje się tu jako podopieczny gildii: jedno co drugi rok. Jak każdy podopieczny, trafia do naboru sześć lat później.', 'Dziecko zostawione pod bramą wychowuje się tu jako podopieczny gildii: jedno co roku. Jak każdy podopieczny, trafia do naboru sześć lat później.'],
+    granary: ['Dwa zapasy trafiają do Stillroom przy każdej wypłacie, dopóki na półce jest miejsce.', 'Trzy zapasy trafiają do Stillroom przy każdej wypłacie, dopóki na półce jest miejsce.'],
+    scriptorium: ['Jednego bohatera rywala na sezon można prześwietlić (scry) za darmo.', 'Dwóch bohaterów rywali na sezon można prześwietlić (scry) za darmo.', 'Trzech bohaterów rywali na sezon można prześwietlić (scry) za darmo.'],
+    standard: ['Tu trzymane są barwy gildii i jeden bohater może je nosić jako Flagbearer. Gdy Flagbearer idzie z drużyną na wyprawę, to dopóki stoi, drużyna bije trochę mocniej, broni się trochę lepiej i trzyma nerwy, gdy walka obraca się przeciw niej. Barwy przechodzą na kogoś nowego najwyżej raz na sezon. Flagbearera wskazujesz na karcie bohatera, w polu Post.', 'Tu trzymane są barwy gildii i jeden bohater może je nosić jako Flagbearer. Gdy Flagbearer idzie z drużyną na wyprawę, to dopóki stoi, drużyna bije jeszcze mocniej, broni się jeszcze lepiej i trzyma nerwy, gdy walka obraca się przeciw niej. Barwy przechodzą na kogoś nowego najwyżej raz na sezon.', 'Tu trzymane są barwy gildii i jeden bohater może je nosić jako Flagbearer. Gdy Flagbearer idzie z drużyną na wyprawę, to dopóki stoi, drużyna bije najmocniej, broni się najlepiej i trzyma nerwy, gdy walka obraca się przeciw niej. Barwy przechodzą na kogoś nowego najwyżej raz na sezon.'],
+    lantern: ['Światło trzymane dla zaginionych, z ich imionami obok: szansa w każdym sezonie, że zaginiony bohater się odnajdzie, jest o 25% wyższa.', 'Światło trzymane dla zaginionych, z ich imionami obok: szansa w każdym sezonie, że zaginiony bohater się odnajdzie, jest o 38% wyższa.']
+  },
+  special: {
+    statue: 'Upamiętnia jednego bohatera, wybranego po budowie: kogokolwiek, kto służył gildii, żyjącego, na emeryturze albo poległego.',
+    carvers: 'Rzeźbi w mieście najważniejsze wydarzenie każdego roku, od roku budowy. Każdy wyrzeźbiony rok dodaje 2 do pozycji (stature) gildii, do 10.',
+    'vale-table': 'Podróżni i bohaterowie jedzą przy jednym stole, a Vale zastawia bardzo dobry.',
+    'vale-green': 'Tu raz w roku zbiera się królestwo, żeby kogoś ukoronować, a stragany zostają potem.',
+    'iron-shift': 'Zmiana, która nigdy nie śpi: zawsze ktoś jest przy bramie i w magazynach.',
+    'iron-cold': 'Wykuty tak głęboko, że zimno przechowa wszystko, co się w nim złoży.',
+    'elder-grove': 'Tu odpowiada się za ścięcie drzewa i mówi o zmarłych.',
+    'elder-deadfall': 'Miasto buduje tylko z tego, co już samo upadło, i trzyma to tutaj.',
+    'marches-fires': 'Ognie wzdłuż muru, zapalane zanim zabrzmi róg, który im odpowiada.',
+    'marches-kilns': 'Popiół daje dobrą zaprawę, a Marchiom nigdy go nie brakuje: czego nie weźmie mur, idzie na targ.',
+    'peaks-rope': 'Tu przewodnicy trzymają liny i liczą każdego, kto wychodzi i wraca.',
+    'peaks-shelter': 'Kamień i ubity śnieg nad ogniem, któremu nigdy nie pozwala się zgasnąć.',
+    'reach-bell': 'Bije przy każdym wiosennym przypływie, odkąd przypływ zabrał miasta poniżej.',
+    'reach-salt': 'To, co morze jeszcze daje: suszone, pakowane i sprzedawane wzdłuż wybrzeża.',
+    'moor-round': 'Strażnicy obchodzą wrzosowisko i niczego na nim nie dotykają.',
+    'moor-waystation': 'Ostatni ogień, zanim droga przetnie pole, na którym upadła korona.'
+  },
+  sig: {
+    vale: 'Najbezpieczniejszy sen w królestwie, jak Vale mówi o sobie: zmęczenie schodzi w domu 50% szybciej.',
+    ironhold: 'Twoja Forge pracuje o dzień szybciej, a jej przedmioty wychodzą o 5% lepsze.',
+    elderwood: 'Sadzonka za każdego straconego bohatera. Śmierć kosztuje pozostałych przyjaciół 50% mniej.',
+    'ashen-marches': 'Miasto zawsze pierwsze odpowiadało na zagrożenie, więc jego mury liczą się podwójnie do obrony.',
+    'riven-peaks': 'Każde imię policzone przy wyjściu jest tu liczone przy powrocie. Śmierć kosztuje pozostałych przyjaciół 50% mniej.',
+    'pale-reach': 'Wiosenny przypływ jest zatrzymany: nie sięga już tego, co miasto zbudowało. Dwa więcej do jego obrony.',
+    cindermoor: 'Miejsce przy ogniu dla każdego, kto wraca do domu: punkt morale co drugi dzień w domu.'
+  },
+  renamed: {
+    'ashen-marches:walls': 'Trzy więcej do obrony miasta. Popiół daje dobrą zaprawę, a Marchiom nigdy go nie brakuje: mur kosztuje 25% mniej złota i połowę pracy przy naprawie.',
+    'pale-reach:memorial': 'Zmarłych chowa się wysoko. Śmierć kosztuje pozostałych przyjaciół 25% mniej.'
+  }
+};
+const HALL_MAX = 6, WING_MAX = 3, SEASON_DAYS = 30, YEAR_DAYS = 120;
+const WING = Object.fromEntries(HT.wings.map(w => [w[0], { id: w[0], label: w[1], blurb: w[2] }]));
+const HSPEC = Object.fromEntries(HT.specs.map(s => [s[0], { id: s[0], wing: s[1], label: s[2], blurb: s[3] }]));
+const HCAP = Object.fromEntries(HT.capstones.map(c => [c[0], { id: c[0], label: c[1], blurb: c[2] }]));
+const SIZE_START = { hold: 1, town: 2, city: 3, great: 4 };
+
+Object.assign(T.pl, {
+  navHall: 'Hall', navTown: 'Miasto',
+  hallTitle: 'Hall gildii', hallLede: 'Poziom Hallu, skrzydła, ich specjalizacje i budowy w toku. Edytor trzyma się zakresów, których używa gra.',
+  hallNoData: 'Ten zapis nie ma danych Hallu.', hallName: 'Guild Hall', hallLevel: 'Poziom Hallu', hallBeds: 'Łóżka (zajęte / wszystkie)', hallCrews: 'Ekipy budowlane (zajęte / wszystkie)',
+  hallCap: 'Zwieńczenie Hallu', hallCapNone: 'brak', hallCapLocked: 'Dostępne, gdy Hall ma poziom 6, każde skrzydło poziom 3 i każde ma specjalizację.',
+  wingsH: 'Skrzydła', wingLevel: 'Poziom', wingSpec: 'Specjalizacja', specNone: 'brak', specLocked: 'od poziomu 3',
+  buildsH: 'Budowy w toku', buildsNone: 'Nic się teraz nie buduje.', buildEnds: 'Koniec w dniu', buildCost: 'Koszt', buildFinish: 'Dokończ teraz', buildCancel: 'Przerwij', buildLevel: 'poziom',
+  hallMax: 'Maks: Hall 6, skrzydła 3', hallMaxDone: 'Hall na poziomie 6, wszystkie skrzydła na 3. Specjalizacje wybierz sam.',
+  bedsOver: 'W drużynie jest {n} bohaterów, a łóżek {b}. Gra nie przejdzie do następnego dnia, dopóki każdy nie ma łóżka: podnieś Hall albo zwolnij kogoś w grze.',
+  bedsBlock: 'Ta zmiana zostawiłaby {b} łóżek na {n} bohaterów, a wtedy gra nie przechodzi do następnego dnia. Zostaje bez zmian.',
+  dropBuild: 'Usunięto budowę, która po tej zmianie nie miała już sensu. Zwrot: {g} złota.',
+  buildDone: 'Budowa dokończona.', buildStopped: 'Budowa przerwana. Zwrot: {g} złota (tyle samo oddaje gra).',
+  townTitle: 'Miasto', townLede: 'Budynki miasta, w którym stoi Twoja gildia: ich rangi, naprawy i projekt w toku.',
+  townNone: 'Ta gildia nie ma miasta (zapis bez miasta albo miasto w ruinie).',
+  townRegion: 'Region', townSize: 'Wielkość', townPlots: 'Działki (zajęte / wszystkie)', townMeter: 'Miernik miasta', townGrow: 'Rozbuduj miasto', townGrowDone: 'Miasto urosło: {s}.', townGrowNo: 'Great City nie ma już dokąd rosnąć.',
+  townBuilt: 'Budynki', townNoBuilt: 'W mieście nic jeszcze nie stoi.', townRank: 'Ranga', townDamaged: 'uszkodzony', townUnkept: 'nieopłacony', townRepair: 'Napraw', townRepairAll: 'Napraw wszystko', townRemove: 'Usuń',
+  townYear: 'rok budowy', townNamedFor: 'imienia', townWorksAs: 'Działa jak połowa każdego z nich',
+  townAddH: 'Dodaj budynek', townAddHint: 'Lista zawiera tylko to, co gra pozwala postawić w tym regionie i przy tej wielkości miasta. Budynek wchodzi tak, jak po ukończeniu budowy: trafia na listę, a miernik miasta rośnie o 2.',
+  townAddBtn: 'Dodaj', townNoPlots: 'Wszystkie działki są zajęte. Rozbuduj miasto albo usuń budynek.', townNoMore: 'Nie ma już nic do postawienia.', townAdded: 'Dodano',
+  townProject: 'Projekt w toku', townProjGrow: 'nowa dzielnica (rozbudowa miasta)', townProjFinish: 'Dokończ teraz', townProjDone: 'Projekt dokończony.',
+  townProjNote: 'Dokończenie robi to samo, co gra po zebraniu złota, pracy i materiałów: budynek staje (albo rośnie jego ranga, albo miasto), a miernik idzie w górę.',
+  townProjGold: 'złoto', townProjLabour: 'praca', townProjMat: 'materiały', townNeeds: 'Wymaga miernika', townCostH: 'Koszt (złoto / praca / materiały)', townAnywhere: 'wszędzie', townOnly: 'tylko',
+  bondsH: 'Więzi', bondsHint: 'z bohaterami z drużyny; od -100 do 100', bondNone: 'Brak więzi z nikim z drużyny.', bondAdd: 'Dodaj więź z...', bondPartner: 'para', bondKin: 'rodzina',
+  bondKinImplicit: 'to samo nazwisko albo ród, więc gra i tak uznaje ich za rodzinę', bondMentorNone: 'bez mentora', bondTeaches: 'uczy', bondOthers: 'Więzi z osobami spoza drużyny (polegli, odeszli): {n}. Edytor ich nie rusza.',
+  bondPartnerTaken: 'Jedno z nich ma już parę. Najpierw rozdziel tamtą.', bondPartnerKin: 'Rodzina nie może być parą.', bondPartnerMin: 'Para powstaje od więzi 20, więc więź została podniesiona do 20.',
+  bondBreak: 'Para z więzią -60 lub niżej rozpada się po następnej wspólnej wyprawie.',
+  noteH: 'Notatka', noteHint: 'widać ją w grze na karcie bohatera', notePh: 'Twoja notatka o tym bohaterze',
+  stashTabStash: 'Schowek', stashTabShop: 'Sklep Quartermastera', shopLede: 'Towar na stojaku Quartermastera. Gra losuje go od nowa z początkiem każdego sezonu (co 30 dni).', shopEmpty: 'Stojak jest pusty.',
+  shopTake: 'Do schowka za darmo', shopNone: 'Ten zapis nie ma jeszcze sklepu. Dodaj przedmiot, a edytor go założy.',
+  chgAll: 'Pełna lista zmian', chgMore: '...i jeszcze {n}', chgAdded: 'dodano', chgRemoved: 'usunięto', chgEmpty: '(brak)', chgGrown: 'Liczba rozbudów miasta',
+  chgGroups: { guild: 'Gildia', roster: 'Bohaterowie', recruits: 'Rekruci', stash: 'Schowek', shop: 'Sklep', hall: 'Hall', town: 'Miasto', bonds: 'Więzi', heroNotes: 'Notatki', other: 'Inne' },
+  compHallWings: 'Skrzydła Hallu i ich specjalizacje', compHallCaps: 'Zwieńczenia Hallu', compTownB: 'Budynki miasta', compTownSig: 'Budynki regionalne (signature)', compHallRules: 'Zasady'
+});
+Object.assign(T.en, {
+  navHall: 'Hall', navTown: 'Town',
+  hallTitle: 'Guild Hall', hallLede: 'The hall\'s level, its wings, their specialisations and work in progress. The editor keeps to the ranges the game uses.',
+  hallNoData: 'This save has no hall data.', hallName: 'Guild Hall', hallLevel: 'Hall level', hallBeds: 'Beds (used / total)', hallCrews: 'Building crews (busy / total)',
+  hallCap: 'Capstone', hallCapNone: 'none', hallCapLocked: 'Opens when the hall is level 6, every wing is level 3 and every wing has a specialisation.',
+  wingsH: 'Wings', wingLevel: 'Level', wingSpec: 'Specialisation', specNone: 'none', specLocked: 'from level 3',
+  buildsH: 'Work in progress', buildsNone: 'Nothing is being built right now.', buildEnds: 'Done on day', buildCost: 'Cost', buildFinish: 'Finish now', buildCancel: 'Stop', buildLevel: 'level',
+  hallMax: 'Max: hall 6, wings 3', hallMaxDone: 'Hall at level 6 and every wing at 3. The specialisations are yours to pick.',
+  bedsOver: 'The roster has {n} delvers and the hall has {b} beds. The game will not turn the day until everyone has a bed: raise the hall or release someone in the game.',
+  bedsBlock: 'That would leave {b} beds for {n} delvers, and the game does not turn the day then. Left as it was.',
+  dropBuild: 'Removed a build that no longer made sense after this change. Refund: {g} gold.',
+  buildDone: 'Build finished.', buildStopped: 'Build stopped. Refund: {g} gold (the same as the game gives back).',
+  townTitle: 'Town', townLede: 'The buildings of the town your guild sits in: their ranks, repairs and the project in progress.',
+  townNone: 'This guild has no town (a save without one, or the town lies in ruins).',
+  townRegion: 'Region', townSize: 'Size', townPlots: 'Plots (used / total)', townMeter: 'Town meter', townGrow: 'Grow the town', townGrowDone: 'The town has grown: {s}.', townGrowNo: 'A Great City has nowhere left to grow.',
+  townBuilt: 'Buildings', townNoBuilt: 'Nothing stands in the town yet.', townRank: 'Rank', townDamaged: 'damaged', townUnkept: 'upkeep unpaid', townRepair: 'Repair', townRepairAll: 'Repair everything', townRemove: 'Remove',
+  townYear: 'built in year', townNamedFor: 'named for', townWorksAs: 'Works as half of each',
+  townAddH: 'Add a building', townAddHint: 'The list holds only what the game allows in this region at this town size. The building goes in the way a finished project does: it joins the list and the town meter rises by 2.',
+  townAddBtn: 'Add', townNoPlots: 'Every plot is taken. Grow the town or remove a building.', townNoMore: 'There is nothing left to build.', townAdded: 'Added',
+  townProject: 'Project in progress', townProjGrow: 'new quarter (growing the town)', townProjFinish: 'Finish now', townProjDone: 'Project finished.',
+  townProjNote: 'Finishing does what the game does once the gold, labour and materials are in: the building stands (or its rank rises, or the town grows) and the meter goes up.',
+  townProjGold: 'gold', townProjLabour: 'labour', townProjMat: 'materials', townNeeds: 'Needs meter', townCostH: 'Cost (gold / labour / materials)', townAnywhere: 'anywhere', townOnly: 'only',
+  bondsH: 'Bonds', bondsHint: 'with delvers on the roster; -100 to 100', bondNone: 'No bonds with anyone on the roster.', bondAdd: 'Add a bond with...', bondPartner: 'partners', bondKin: 'kin',
+  bondKinImplicit: 'same family name or lineage, so the game counts them as kin anyway', bondMentorNone: 'no mentor', bondTeaches: 'teaches', bondOthers: 'Bonds with people off the roster (fallen, departed): {n}. The editor leaves them alone.',
+  bondPartnerTaken: 'One of them already has a partner. Split that pair first.', bondPartnerKin: 'Kin cannot be partners.', bondPartnerMin: 'Partners form from a bond of 20, so the bond was raised to 20.',
+  bondBreak: 'Partners with a bond of -60 or lower split after their next delve together.',
+  noteH: 'Note', noteHint: 'shown in the game on the delver\'s sheet', notePh: 'Your note about this delver',
+  stashTabStash: 'Stash', stashTabShop: 'Quartermaster\'s shop', shopLede: 'What is on the Quartermaster\'s rack. The game redraws it at the start of every season (every 30 days).', shopEmpty: 'The rack is empty.',
+  shopTake: 'To stash for free', shopNone: 'This save has no shop yet. Add an item and the editor will set one up.',
+  chgAll: 'Full list of changes', chgMore: '...and {n} more', chgAdded: 'added', chgRemoved: 'removed', chgEmpty: '(none)', chgGrown: 'Times the town has grown',
+  chgGroups: { guild: 'Guild', roster: 'Heroes', recruits: 'Recruits', stash: 'Stash', shop: 'Shop', hall: 'Hall', town: 'Town', bonds: 'Bonds', heroNotes: 'Notes', other: 'Other' },
+  compHallWings: 'Hall wings and their specialisations', compHallCaps: 'Hall capstones', compTownB: 'Town buildings', compTownSig: 'Regional signature buildings', compHallRules: 'Rules'
+});
+T.pl.tabs.hall = 'Hall i miasto'; T.en.tabs.hall = 'Hall & town';
+Object.assign(FT, {
+  hallLevel: { pl: ['Poziom Hallu', 'Od 1 do 6. Daje łóżka (6 + 3 na poziom) i ekipy budowlane: 1 na poziomach 1-2, 2 na 3-4, 3 na 5-6. Edytor nie zejdzie poniżej liczby łóżek potrzebnej drużynie, bo gra nie przechodzi wtedy do następnego dnia. W grze kolejny poziom kosztuje 1000 złota x obecny poziom i wymaga renomy: 60, 130, 230, 360, 530.'], en: ['Hall level', '1 to 6. It gives beds (6 + 3 a level) and building crews: 1 at levels 1-2, 2 at 3-4, 3 at 5-6. The editor will not go below the beds the roster needs, because the game does not turn the day then. In the game the next level costs 1000 gold x the current level and needs renown: 60, 130, 230, 360, 530.'] },
+  wingLevel: { pl: ['Poziom skrzydła', 'Od 0 do 3. Counting House nie schodzi poniżej 1, bo gra przywraca go przy wczytaniu. W grze kolejny poziom kosztuje 600 złota x (poziom + 1), a poziomy 2 i 3 wymagają renomy 60 i 230.'], en: ['Wing level', '0 to 3. The Counting House never goes below 1: the game puts it back on load. In the game the next level costs 600 gold x (level + 1), and levels 2 and 3 need 60 and 230 renown.'] },
+  wingSpec: { pl: ['Specjalizacja skrzydła', 'Jedna z dwóch, do wyboru po trzecim poziomie skrzydła. W grze kosztuje 1800 złota i 10 dni. Obniżenie skrzydła poniżej 3 zdejmuje specjalizację.'], en: ['Wing specialisation', 'One of two, open once the wing reaches its third level. In the game it costs 1800 gold and 10 days. Lowering the wing below 3 clears it.'] },
+  hallCap: { pl: ['Zwieńczenie Hallu', 'Ostatnie dzieło Hallu: jedno z czterech, gdy Hall ma poziom 6, każde skrzydło poziom 3 i każde ma specjalizację.'], en: ['Capstone', 'The hall\'s last work: one of four, once the hall is level 6, every wing is level 3 and every wing is specialised.'] },
+  buildEnds: { pl: ['Dzień zakończenia', 'Dzień gry, w którym budowa się skończy. Ustaw dzisiejszy albo wcześniejszy, a skończy się przy najbliższym przejściu dnia.'], en: ['Completion day', 'The game day the work ends. Set today or earlier and it ends on the next day change.'] },
+  townMeter: { pl: ['Miernik miasta', 'Rozwój miasta, w każdym regionie nazwany inaczej. Otwiera kolejne budynki: 3, 6 i 8. Rośnie o 2 za nowy budynek i rozbudowę miasta, o 1 za podniesienie rangi.'], en: ['Town meter', 'How far the town has come; each region has its own name for it. It opens more buildings at 3, 6 and 8. It rises by 2 for a new building or a growth, and by 1 for a rank.'] },
+  townRank: { pl: ['Ranga budynku', 'Druga ranga jest dostępna zawsze, trzecia tylko w City albo Great City. Town Hall ma najwyżej rangę 2 i potrzebuje do niej City. Budynek regionalny (signature) ma najwyżej rangę 2. W grze ranga 2 kosztuje 2x złota, ranga 3 kosztuje 3x.'], en: ['Building rank', 'A second rank is always open; a third needs a City or a Great City. The Town Hall stops at rank 2 and needs a City for it. The signature building stops at rank 2. In the game rank 2 costs twice the gold and rank 3 three times.'] },
+  bondValue: { pl: ['Więź', 'Od -100 do 100. Feud do -60, Rival do -20, Friend od 20, Close friend od 60. Dobre więzi w drużynie podnoszą jej obrażenia, złe je obniżają. Więź sama powoli wraca w stronę zera.'], en: ['Bond', '-100 to 100. Feud at -60 or lower, Rival at -20 or lower, Friend from 20, Close friend from 60. Good bonds in a party raise its damage and bad ones lower it. A bond drifts slowly back toward zero.'] },
+  bondPartner: { pl: ['Para', 'W grze para powstaje z wydarzenia: oboje w drużynie, bez innej pary, niespokrewnieni, więź co najmniej 20. Śmierć partnera boli najmocniej. Para rozpada się przy więzi -60 lub niżej.'], en: ['Partners', 'In the game a pair comes from an event: both on the roster, neither partnered, not kin, bond of at least 20. Losing a partner hurts the most. A pair splits at a bond of -60 or lower.'] },
+  bondKin: { pl: ['Rodzina', 'Jawny znacznik pokrewieństwa. To samo nazwisko albo ten sam ród gra liczy jako rodzinę także bez niego. Rodzina nie może być parą.'], en: ['Kin', 'An explicit kin mark. The same family name or lineage counts as kin even without it. Kin cannot be partners.'] },
+  bondMentor: { pl: ['Mentor', 'Kto w tej dwójce jest mentorem. Uczeń rozwija się szybciej na wyprawie z mentorem. Gra sama ustawia mentora przy więzi od 10, gdy starszy stażem bohater pasuje na nauczyciela.'], en: ['Mentor', 'Who mentors whom in this pair. The pupil grows faster on a delve beside the mentor. The game sets one itself from a bond of 10 when the senior delver suits the part.'] },
+  note: { pl: ['Notatka', 'Twoja notatka z karty bohatera w grze. Najwyżej 1000 znaków; gra przycina resztę.'], en: ['Note', 'Your note from the delver\'s sheet in the game. Up to 1000 characters; the game cuts the rest.'] }
+});
+Object.assign(FT_LIM, { hallLevel: '1-6', wingLevel: '0-3', townMeter: '0-99', bondValue: '-100-100' });
+
+/* ----- hall helpers (the same arithmetic as the game) ----- */
+const wingLv = (hall, w) => (hall.facilities && hall.facilities[w]) || 0;
+const hallBuilds = hall => (hall.builds ? hall.builds : hall.construction ? [hall.construction] : []);
+const hallCrews = hall => (hall.level >= 5 ? 3 : hall.level >= 3 ? 2 : 1);
+const hallBeds = hall => Math.round((6 + hall.level * 3) * (hall.firstBeds ?? 9) / 9) + (hall.spec && hall.spec.tavern === 'inn' ? 2 : 0) + (hall.capstone === 'beds' ? 3 : 0);
+const bedsUsed = gd => (gd.roster || []).filter(h => !h.aspirant && !h.leavingOnReturn && !h.givesBerth).length;
+const hallCapReady = hall => hall.level >= HALL_MAX && HT.wingOrder.every(w => wingLv(hall, w) >= WING_MAX && hall.spec && hall.spec[w]);
+function buildRefund(b, day) {
+  const total = b.startDay != null ? Math.max(1, b.completeDay - b.startDay) : (b.spec ? 10 : b.target === 'hall' ? 14 : 10);
+  const left = Math.max(0, Math.min(total, b.completeDay - day));
+  return Math.round((b.cost || 0) * left / total);
+}
+function setHallBuilds(hall, list) { hall.builds = list; delete hall.construction; }
+/* Drops builds that would push a level past its cap or a specialisation onto a wing that cannot take it. Returns the gold refunded. */
+function hallPruneBuilds(gd) {
+  const hall = gd.hall; const list = hallBuilds(hall); let back = 0, dropped = 0;
+  const keep = list.filter(b => {
+    const bad = b.target === 'hall' ? hall.level >= HALL_MAX : !WING[b.target] ? false : b.spec ? (wingLv(hall, b.target) < WING_MAX || !!(hall.spec && hall.spec[b.target])) : wingLv(hall, b.target) >= WING_MAX;
+    if (bad) { back += buildRefund(b, gd.day || 0); dropped++; }
+    return !bad;
+  });
+  if (!dropped) return -1;
+  setHallBuilds(hall, keep); gd.gold = (gd.gold || 0) + back; return back;
+}
+function hallFinishBuild(gd, i) {
+  const hall = gd.hall; const list = hallBuilds(hall); const b = list[i]; if (!b) return false;
+  if (b.target === 'hall') hall.level = Math.min(HALL_MAX, (hall.level || 1) + 1);
+  else if (WING[b.target]) {
+    if (b.spec) { if (HSPEC[b.spec] && HSPEC[b.spec].wing === b.target) hall.spec = { ...(hall.spec || {}), [b.target]: b.spec }; }
+    else { hall.facilities = hall.facilities || {}; hall.facilities[b.target] = Math.min(WING_MAX, wingLv(hall, b.target) + 1); }
+  }
+  setHallBuilds(hall, list.filter((_, k) => k !== i)); return true;
+}
+
+/* ----- town helpers ----- */
+function playerSeat(gd) {
+  if (!gd || gd.noTown || !gd.league) return null;
+  const pg = (gd.league.divisions || []).flatMap(d => d.guilds || []).find(x => x.isPlayer);
+  if (!pg) return null;
+  const seat = pg.seat || (gd.league.seats || []).find(s => s.name === pg.seatOf);
+  return seat && !seat.ruined && HT.townRegion[seat.region] ? seat : null;
+}
+const townOf = gd => { const seat = playerSeat(gd); return seat && gd.town && gd.town.seat === seat.name ? gd.town : null; };
+function ensureTown(gd) {
+  const seat = playerSeat(gd); if (!seat) return null;
+  if (!gd.town || gd.town.seat !== seat.name) gd.town = { seat: seat.name, meter: SIZE_START[seat.size] || 1, built: [], garrison: [] };
+  if (!gd.town.built) gd.town.built = [];
+  return gd.town;
+}
+const townSize = (seat, town) => HT.sizes.order[Math.min(3, Math.max(0, HT.sizes.order.indexOf(seat.size)) + ((town && town.grown) || 0))];
+const gameYear = gd => Math.floor((gd.day || 0) / YEAR_DAYS) + 1;
+function tbName(region, id) {
+  const R = HT.townRegion[region] || {};
+  if (id === 'signature') return R.sig ? R.sig[0] : 'Signature';
+  if (HT.townSpecial[id]) return HT.townSpecial[id][0];
+  if (R.renamed && R.renamed[id]) return R.renamed[id][0];
+  return HT.townBase[id] ? HT.townBase[id][0] : id;
+}
+function tbDesc(region, id, rank) {
+  const pl = S.lang === 'pl'; const R = HT.townRegion[region] || {};
+  if (id === 'signature') return R.sig ? (pl ? PL3.sig[region] : R.sig[1]) : '';
+  if (HT.townSpecial[id]) {
+    const c = HT.townCost[id]; const base = pl ? PL3.special[id] : HT.townSpecial[id][1];
+    return base + (c && c.worksAs ? ` ${t('townWorksAs')}: ${c.worksAs.map(x => tbName(region, x)).join(' + ')}.` : '');
+  }
+  const B = HT.townBase[id]; if (!B) return '';
+  const P = PL3.town[id] || [];
+  if (rank >= 3) return (pl ? (P[2] || P[1]) : (B[3] || B[2])) || '';
+  if (rank === 2) return (pl ? P[1] : B[2]) || '';
+  if (R.renamed && R.renamed[id]) return pl ? PL3.renamed[region + ':' + id] : R.renamed[id][1];
+  return (pl ? P[0] : B[1]) || '';
+}
+const tbGold = (seat, size, id) => Math.round(HT.townCost[id].gold * (HT.sizes.purse[size] || 1) * (id === 'walls' && HT.townRegion[seat.region].ashMortar ? .75 : 1) / 10) * 10;
+function tbMaxRank(id, size) { const big = size === 'city' || size === 'great'; return id === 'signature' ? 2 : id === 'townhall' ? (big ? 2 : 1) : (big ? 3 : 2); }
+function tbAvailable(seat, town) {
+  const R = HT.townRegion[seat.region]; const size = townSize(seat, town); const have = new Set(((town && town.built) || []).map(b => b.id));
+  return HT.townOrder.filter(id => !R.forbidden.includes(id) && R.insteadOf !== id && (!HT.townCost[id].region || HT.townCost[id].region === seat.region) && !have.has(id) && !((id === 'townhall' || id === 'signature') && size === 'hold'));
+}
+function townRepair(town, b) {
+  delete b.damaged; delete b.unkept;
+  if (town.mending && town.mending.id === b.id) { const nx = town.built.find(x => x.damaged); if (nx) town.mending = { id: nx.id, labour: 0 }; else delete town.mending; }
+}
+function townStandingAdd(gd, name, d) {
+  const s = { ...(gd.townStanding || {}) }; const v = clamp((s[name] || 0) + d, -9, 9);
+  if (v === 0) delete s[name]; else s[name] = v;
+  gd.townStanding = s;
+}
+/* Finishes the current project the way the game does when its gold, labour and materials are all in. */
+function townFinishProject(gd) {
+  const seat = playerSeat(gd), town = townOf(gd); if (!seat || !town || !town.project) return false;
+  const p = town.project; const year = gameYear(gd);
+  if (p.id === 'grow') {
+    if (townSize(seat, town) !== 'great') { town.grown = (town.grown || 0) + 1; town.meter = (town.meter || 0) + 2; town.growth = [...(town.growth || []), { size: townSize(seat, town), year }]; townStandingAdd(gd, seat.name, 3); }
+  } else if (p.rank === 2 || p.rank === 3) {
+    const b = town.built.find(x => x.id === p.id); if (b) { b.rank = p.rank; town.meter = (town.meter || 0) + 1; townStandingAdd(gd, seat.name, 1); }
+  } else if (HT.townCost[p.id] && !town.built.some(x => x.id === p.id)) {
+    town.built.push({ id: p.id, year, ...(p.helpers && p.helpers.length ? { helpers: p.helpers } : {}), ...(p.hands && p.hands.length ? { hands: p.hands } : {}) });
+    town.meter = (town.meter || 0) + 2; townStandingAdd(gd, seat.name, 2);
+  }
+  delete town.project;
+  if (gd.jobBoard) gd.jobBoard = gd.jobBoard.filter(j => !j.townWork || j.townWork.kind === 'mend');
+  return true;
+}
+
+/* ----- bonds helpers ----- */
+const bondKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+const famName = n => { const m = /[ ·・]/.exec(n || ''); return m ? n.slice(m.index + 1) : ''; };
+const bondBand = v => (v <= -60 ? 'feud' : v <= -20 ? 'rival' : v >= 60 ? 'close' : v >= 20 ? 'friend' : 'neutral');
+const kinByName = (a, b) => !!(a.lineage && b.lineage && a.lineage === b.lineage) || (!!famName(a.name) && famName(a.name) === famName(b.name));
+function partnerOf(gd, id, exceptKey) {
+  for (const [k, b] of Object.entries(gd.bonds || {})) { if (!b.partner || k === exceptKey) continue; const [x, y] = k.split('|'); if (x === id || y === id) return x === id ? y : x; }
+  return null;
+}
+
+/* ----- views: hall ----- */
+function viewHall() {
+  const gd = g(); const hall = gd.hall; const pl = S.lang === 'pl';
+  const head = `<div class="view-head"><div><h1 class="view-title">${esc(t('hallTitle'))}</h1><p class="view-lede">${esc(t('hallLede'))}</p></div>${hall ? `<button class="btn gold" type="button" data-act="hall-max">${esc(t('hallMax'))}</button>` : ''}</div>`;
+  if (!hall) return head + `<p class="muted">${esc(t('hallNoData'))}</p>`;
+  const builds = hallBuilds(hall); const beds = hallBeds(hall), used = bedsUsed(gd), crews = hallCrews(hall);
+  const lvOpts = HT.hallNames.map((n, i) => `<option value="${i + 1}" ${hall.level === i + 1 ? 'selected' : ''}>${i + 1} · ${esc(n)}</option>`).join('');
+  const capReady = hallCapReady(hall);
+  const capOpts = `<option value="">${esc(t('hallCapNone'))}</option>` + HT.capstones.map(c => `<option value="${c[0]}" ${hall.capstone === c[0] ? 'selected' : ''}>${esc(c[1])}</option>`).join('');
+  const cap = hall.capstone && HCAP[hall.capstone];
+  const top = `<div class="panel panel-pad" style="margin-bottom:16px"><div class="form-grid">
+      <label class="fld"><span data-tip="fld:hallLevel">${esc(t('hallLevel'))}</span><select class="d-sel" id="hall-level" data-y="hall:level" data-tip="fld:hallLevel">${lvOpts}</select></label>
+      <label class="fld"><span data-tip="fld:hallCap">${esc(t('hallCap'))}</span><select class="d-sel" id="hall-cap" data-y="hall:cap" data-tip="fld:hallCap" ${capReady || hall.capstone ? '' : 'disabled'}>${capOpts}</select>
+        <span class="fhint">${esc(cap ? (pl ? PL3.caps[cap.id] : cap.blurb) : capReady ? '' : t('hallCapLocked'))}</span></label>
+    </div>
+    <div class="stat-row" style="margin-top:14px">
+      <div class="stat"><b>${esc(used)} / ${esc(beds)}</b><span>${esc(t('hallBeds'))}</span></div>
+      <div class="stat"><b>${esc(builds.length)} / ${esc(crews)}</b><span>${esc(t('hallCrews'))}</span></div>
+    </div>${used > beds ? `<p class="warn-line">${esc(t('bedsOver').replace('{n}', used).replace('{b}', beds))}</p>` : ''}</div>`;
+  const wings = HT.wingOrder.map(w => {
+    const W = WING[w]; const lv = wingLv(hall, w); const min = w === 'counting' ? 1 : 0; const sp = hall.spec && hall.spec[w];
+    const lvSel = `<select class="d-sel" id="hw-${w}" data-y="hall:wing:${w}" data-tip="fld:wingLevel" aria-label="${esc(W.label)}: ${esc(t('wingLevel'))}">${[0, 1, 2, 3].filter(v => v >= min || v === lv).map(v => `<option value="${v}" ${v === lv ? 'selected' : ''}>${v}</option>`).join('')}</select>`;
+    const spSel = `<select class="d-sel" id="hs-${w}" data-y="hall:spec:${w}" data-tip="fld:wingSpec" aria-label="${esc(W.label)}: ${esc(t('wingSpec'))}" ${lv >= WING_MAX ? '' : 'disabled'}><option value="">${esc(lv >= WING_MAX ? t('specNone') : t('specLocked'))}</option>${HT.specOf[w].map(s => `<option value="${s}" ${sp === s ? 'selected' : ''}>${esc(HSPEC[s].label)}</option>`).join('')}</select>`;
+    return `<div class="wing"><div class="wing-head"><b>${esc(W.label)}</b><label class="inl"><span>${esc(t('wingLevel'))}</span>${lvSel}</label><label class="inl"><span>${esc(t('wingSpec'))}</span>${spSel}</label></div>
+      <p class="wing-desc">${esc(pl ? PL3.wings[w] : W.blurb)}</p>
+      ${HT.specOf[w].map(s => `<p class="wing-desc spec${sp === s ? ' on' : ''}"><b>${esc(HSPEC[s].label)}:</b> ${esc(pl ? PL3.specs[s] : HSPEC[s].blurb)}</p>`).join('')}</div>`;
+  }).join('');
+  const bRows = builds.map((b, i) => {
+    const name = b.target === 'hall' ? t('hallName') : (WING[b.target] ? WING[b.target].label : b.target);
+    const cur = b.target === 'hall' ? hall.level : wingLv(hall, b.target);
+    const what = b.spec ? `${name}: ${HSPEC[b.spec] ? HSPEC[b.spec].label : b.spec}` : `${name}: ${t('buildLevel')} ${cur} → ${cur + 1}`;
+    return `<div class="build-row"><b>${esc(what)}</b>
+      <label class="inl"><span data-tip="fld:buildEnds">${esc(t('buildEnds'))}</span><input class="d-in" type="number" min="0" step="1" id="hb-${i}" data-y="hb:${i}:day" data-tip="fld:buildEnds" value="${esc(b.completeDay ?? 0)}"></label>
+      <span class="faint">${esc(t('buildCost'))}: ${esc(b.cost ?? 0)}</span>
+      <span class="build-acts"><button type="button" class="btn small" data-act="hb-finish" data-idx="${i}">${esc(t('buildFinish'))}</button>
+      <button type="button" class="btn small danger" data-act="hb-cancel" data-idx="${i}">${esc(t('buildCancel'))} (+${esc(buildRefund(b, gd.day || 0))})</button></span></div>`;
+  }).join('');
+  return `${head}${top}
+    <div class="panel panel-pad" style="margin-bottom:16px"><h2 class="panel-title">${esc(t('wingsH'))}</h2>${wings}</div>
+    <div class="panel panel-pad"><h2 class="panel-title">${esc(t('buildsH'))}</h2>${builds.length ? bRows : `<p class="muted">${esc(t('buildsNone'))}</p>`}</div>`;
+}
+
+/* ----- views: town ----- */
+function viewTown() {
+  const gd = g(); const seat = playerSeat(gd);
+  const head = (title, lede) => `<div class="view-head"><div><h1 class="view-title">${esc(title)}</h1><p class="view-lede">${esc(lede)}</p></div></div>`;
+  if (!seat) return head(t('townTitle'), t('townLede')) + `<p class="muted">${esc(t('townNone'))}</p>`;
+  const town = townOf(gd); const R = HT.townRegion[seat.region]; const size = townSize(seat, town);
+  const built = (town && town.built) || []; const plots = HT.sizes.plots[size] || 0;
+  const meter = town ? (town.meter ?? 0) : (SIZE_START[seat.size] || 1);
+  const anyBroken = built.some(b => b.damaged || b.unkept);
+  const top = `<div class="panel panel-pad" style="margin-bottom:16px"><div class="stat-row">
+      <div class="stat"><b>${esc(REGION[seat.region] ? REGION[seat.region].name : seat.region)}</b><span>${esc(t('townRegion'))}</span></div>
+      <div class="stat"><b>${esc(HT.sizes.label[size] || size)}</b><span>${esc(t('townSize'))}</span></div>
+      <div class="stat"><b>${esc(built.length)} / ${esc(plots)}</b><span>${esc(t('townPlots'))}</span></div>
+    </div>
+    <div class="form-grid" style="margin-top:14px">
+      <label class="fld"><span data-tip="fld:townMeter">${esc(t('townMeter'))}: ${esc(R.meter)}</span><input class="d-in" type="number" min="0" max="99" step="1" id="town-meter" data-y="town:meter" data-tip="fld:townMeter" value="${esc(meter)}"></label>
+    </div>
+    <div class="qa" style="margin-top:14px"><button type="button" class="btn" data-act="town-grow" ${size === 'great' ? 'disabled' : ''}>${esc(t('townGrow'))}${size === 'great' ? '' : ` (${esc(HT.sizes.label[size])} → ${esc(HT.sizes.label[HT.sizes.order[HT.sizes.order.indexOf(size) + 1]])})`}</button>
+      ${anyBroken ? `<button type="button" class="btn" data-act="tb-repair-all">${esc(t('townRepairAll'))}</button>` : ''}</div></div>`;
+  const rows = built.map((b, i) => {
+    const known = b.id === 'signature' || !!HT.townCost[b.id]; const rank = b.rank || 1; const max = Math.max(rank, tbMaxRank(b.id, size));
+    const rankSel = `<select class="d-sel" id="tb-rank-${i}" data-y="tb:${i}:rank" data-tip="fld:townRank" aria-label="${esc(t('townRank'))}" ${known ? '' : 'disabled'}>${Array.from({ length: max }, (_, k) => `<option value="${k + 1}" ${rank === k + 1 ? 'selected' : ''}>${k + 1}</option>`).join('')}</select>`;
+    const flags = [b.damaged ? t('townDamaged') : '', b.unkept ? t('townUnkept') : ''].filter(Boolean);
+    const meta = [b.year != null ? `${t('townYear')} ${b.year}` : '', b.namedFor ? `${t('townNamedFor')} ${b.namedFor}` : ''].filter(Boolean).join(' · ');
+    return `<div class="wing"><div class="wing-head"><b>${esc(tbName(seat.region, b.id))}</b>${flags.map(f => `<span class="pill bad">${esc(f)}</span>`).join('')}
+        <label class="inl"><span>${esc(t('townRank'))}</span>${rankSel}</label>
+        <span class="build-acts">${flags.length ? `<button type="button" class="btn small" data-act="tb-repair" data-idx="${i}">${esc(t('townRepair'))}</button>` : ''}
+        <button type="button" class="btn small danger" data-act="tb-del" data-idx="${i}">${esc(S.confirmDel === 'tb:' + i ? t('confirmDel') : t('townRemove'))}</button></span></div>
+      <p class="wing-desc">${esc(tbDesc(seat.region, b.id, rank))}</p>${meta ? `<p class="wing-desc faint">${esc(meta)}</p>` : ''}</div>`;
+  }).join('');
+  const avail = tbAvailable(seat, town); const pick = avail.includes(S.townPick) ? S.townPick : avail[0];
+  let add;
+  if (!avail.length) add = `<p class="muted">${esc(t('townNoMore'))}</p>`;
+  else if (built.length >= plots) add = `<p class="muted">${esc(t('townNoPlots'))}</p>`;
+  else {
+    const c = pick === 'signature' ? HT.townCost.signature : HT.townCost[pick];
+    add = `<p class="wing-desc" style="margin:0 0 10px">${esc(t('townAddHint'))}</p><div class="wing-head">
+        <select class="d-sel" id="town-pick" data-y="town:pick" aria-label="${esc(t('townAddH'))}">${avail.map(id => `<option value="${esc(id)}" ${id === pick ? 'selected' : ''}>${esc(tbName(seat.region, id))}</option>`).join('')}</select>
+        <button type="button" class="btn gold" data-act="town-add">${esc(t('townAddBtn'))}</button></div>
+      <p class="wing-desc">${esc(tbDesc(seat.region, pick, 1))}</p>
+      <p class="wing-desc faint">${esc(t('townNeeds'))}: ${esc(c.needs)} · ${esc(t('townCostH'))}: ${esc(tbGold(seat, size, pick))} / ${esc(c.labour)} / ${esc(c.materials)}</p>`;
+  }
+  const p = town && town.project; let proj = '';
+  if (p) {
+    const pname = p.id === 'grow' ? t('townProjGrow') : tbName(seat.region, p.id) + (p.rank ? ` (${t('townRank').toLowerCase()} ${p.rank})` : '');
+    proj = `<div class="panel panel-pad" style="margin-top:16px"><h2 class="panel-title">${esc(t('townProject'))}</h2>
+      <div class="wing-head"><b>${esc(pname)}</b><span class="faint">${esc(t('townProjGold'))}: ${esc(p.gold ?? 0)} · ${esc(t('townProjLabour'))}: ${esc(p.labour ?? 0)} · ${esc(t('townProjMat'))}: ${esc(p.materials ?? 0)}</span>
+      <span class="build-acts"><button type="button" class="btn small" data-act="tp-finish">${esc(t('townProjFinish'))}</button></span></div>
+      <p class="wing-desc">${esc(t('townProjNote'))}</p></div>`;
+  }
+  return `${head(`${t('townTitle')}: ${seat.name}`, t('townLede'))}${top}
+    <div class="panel panel-pad" style="margin-bottom:16px"><h2 class="panel-title">${esc(t('townBuilt'))}</h2>${built.length ? rows : `<p class="muted">${esc(t('townNoBuilt'))}</p>`}</div>
+    <div class="panel panel-pad"><h2 class="panel-title">${esc(t('townAddH'))}</h2>${add}</div>${proj}`;
+}
+
+/* ----- hero sheet: bonds and note ----- */
+function bondsSection(h) {
+  if (!S.heroKey || S.heroKey[0] !== 'r') return '';
+  const gd = g(); const bonds = gd.bonds || {}; const ro = gd.roster || [];
+  const mine = ro.filter(o => o.id !== h.id && bonds[bondKey(h.id, o.id)]).map(o => ({ o, b: bonds[bondKey(h.id, o.id)] })).sort((x, y) => (y.b.value || 0) - (x.b.value || 0));
+  const ids = new Set(ro.map(o => o.id));
+  const outside = Object.keys(bonds).filter(k => { const [a, b] = k.split('|'); return (a === h.id && !ids.has(b)) || (b === h.id && !ids.has(a)); }).length;
+  const rows = mine.map(({ o, b }) => {
+    const band = bondBand(b.value || 0); const impl = kinByName(h, o); const cls = band === 'close' || band === 'friend' ? 'h' : band === 'neutral' ? 'n' : 'r';
+    const mOpt = (v, label) => `<option value="${esc(v)}" ${(b.mentorId || '') === v ? 'selected' : ''}>${esc(label)}</option>`;
+    return `<div class="bond-row"><span class="bond-name">${esc(o.name)}</span>
+      <input class="f-in" type="number" min="-100" max="100" step="1" id="bv-${esc(o.id)}" data-y="bond:${esc(o.id)}:value" data-tip="fld:bondValue" aria-label="${esc(t('bondsH'))}: ${esc(o.name)}" value="${esc(Math.round(b.value || 0))}">
+      <span class="lean-tag ${cls}">${esc(HT.bondLabels[band])}</span>
+      <label class="chk" data-tip="fld:bondPartner"><input type="checkbox" id="bp-${esc(o.id)}" data-y="bond:${esc(o.id)}:partner" ${b.partner ? 'checked' : ''}> ${esc(t('bondPartner'))}</label>
+      <label class="chk" data-tip="fld:bondKin"${impl ? ` title="${esc(t('bondKinImplicit'))}"` : ''}><input type="checkbox" id="bk-${esc(o.id)}" data-y="bond:${esc(o.id)}:kin" ${b.kin || impl ? 'checked' : ''} ${impl && !b.kin ? 'disabled' : ''}> ${esc(t('bondKin'))}</label>
+      <select class="f-sel" id="bm-${esc(o.id)}" data-y="bond:${esc(o.id)}:mentor" data-tip="fld:bondMentor" aria-label="Mentor">${mOpt('', t('bondMentorNone'))}${mOpt(h.id, `${h.name} ${t('bondTeaches')}`)}${mOpt(o.id, `${o.name} ${t('bondTeaches')}`)}</select>
+      <button type="button" class="btn-ink red" data-act="bond-del" data-id="${esc(o.id)}">${esc(S.confirmDel === 'bond:' + o.id ? t('confirmDel') : t('remove'))}</button>
+      ${b.partner && (b.value || 0) <= -60 ? `<span class="warn-ink bond-warn">${esc(t('bondBreak'))}</span>` : ''}</div>`;
+  }).join('');
+  const rest = ro.filter(o => o.id !== h.id && !bonds[bondKey(h.id, o.id)]);
+  const addSel = rest.length ? `<div class="bond-add"><select class="f-sel" id="bond-new" data-y="bond-new" aria-label="${esc(t('bondAdd'))}"><option value="">${esc(t('bondAdd'))}</option>${rest.map(o => `<option value="${esc(o.id)}">${esc(o.name)}</option>`).join('')}</select></div>` : '';
+  return `<section class="sec"><h2 class="sec-title">${esc(t('bondsH'))} <small>${esc(t('bondsHint'))}</small></h2>
+    ${mine.length ? rows : `<p class="hint">${esc(t('bondNone'))}</p>`}${addSel}
+    ${outside ? `<p class="hint">${esc(t('bondOthers').replace('{n}', outside))}</p>` : ''}</section>`;
+}
+function notesSection(h) {
+  if (!S.heroKey || S.heroKey[0] !== 'r') return '';
+  const gd = g(); const txt = (gd.heroNotes && gd.heroNotes[h.id]) ?? h.notes ?? '';
+  return `<section class="sec"><h2 class="sec-title">${esc(t('noteH'))} <small>${esc(t('noteHint'))}</small></h2>
+    <textarea class="f-in note-in" id="hero-note" rows="3" maxlength="1000" data-y="note" data-tip="fld:note" aria-label="${esc(t('noteH'))}" placeholder="${esc(t('notePh'))}">${esc(txt)}</textarea></section>`;
+}
+
+/* ----- stash: the Quartermaster's shop ----- */
+function stashTabs() {
+  const gd = g(); const n = (gd.stash || []).length; const m = gd.shop && gd.shop.stock ? gd.shop.stock.length : 0; const cur = S.stashTab === 'shop' ? 'shop' : 'stash';
+  return `<div class="tabs" role="tablist"><button type="button" class="tab" role="tab" data-act="stash-tab" data-id="stash" aria-selected="${cur === 'stash'}">${esc(t('stashTabStash'))} (${n})</button>
+    <button type="button" class="tab" role="tab" data-act="stash-tab" data-id="shop" aria-selected="${cur === 'shop'}">${esc(t('stashTabShop'))} (${m})</button></div>`;
+}
+function viewShop() {
+  const gd = g(); const st = (gd.shop && gd.shop.stock) || [];
+  const cards = st.map((it, i) => `<div class="icard ${esc(it.rarity)}"><span class="slot-kind" style="color:var(--text-faint)">${esc(T[S.lang].slots[it.slot] || it.slot)}</span>${itemBody(it)}
+    <div class="slot-actions"><button type="button" class="btn small" data-act="shop-edit" data-idx="${i}">${esc(t('edit'))}</button><button type="button" class="btn small" data-act="shop-take" data-idx="${i}">${esc(t('shopTake'))}</button>
+    <button type="button" class="btn small danger" data-act="shop-del" data-idx="${i}">${esc(S.confirmDel === 'shop:' + i ? t('confirmDel') : t('del'))}</button></div></div>`).join('');
+  return `<div class="view-head"><div><h1 class="view-title">${esc(t('stashTitle'))}</h1><p class="view-lede">${esc(t('shopLede'))}</p></div><button class="btn gold" type="button" data-act="shop-new">${esc(t('newItem'))}</button></div>
+  ${stashTabs()}${st.length ? `<div class="items-grid">${cards}</div>` : `<p class="muted">${esc(gd.shop ? t('shopEmpty') : t('shopNone'))}</p>`}`;
+}
+function ensureShop(gd) {
+  if (!gd.shop) gd.shop = { season: Math.floor((gd.day || 0) / SEASON_DAYS), stock: [] };
+  if (!gd.shop.stock) gd.shop.stock = [];
+  return gd.shop;
+}
+
+/* ----- the full list of changes shown before saving ----- */
+function chgVal(v) {
+  if (v === undefined) return t('chgEmpty');
+  if (v && typeof v === 'object') { if (typeof v.name === 'string' && (v.slot || v.classId)) return v.name; const s = JSON.stringify(v); return s.length > 80 ? s.slice(0, 77) + '...' : s; }
+  const s = String(v); return s.length > 80 ? s.slice(0, 77) + '...' : s;
+}
+function chgWalk(a, b, path, out) {
+  if (out.length >= 1500 || a === b) return;
+  /* A list or a flat map that appears or goes away whole is listed entry by entry, not as one blob. */
+  const last = path[path.length - 1];
+  if ((a === undefined || b === undefined) && (path.length === 1 || last === 'spec' || last === 'facilities')) {
+    const x = a === undefined ? b : a;
+    if (x && typeof x === 'object') { const e = Array.isArray(x) ? [] : {}; if (a === undefined) a = e; else b = e; }
+  }
+  const oa = a && typeof a === 'object', ob = b && typeof b === 'object';
+  if (oa && ob && Array.isArray(a) === Array.isArray(b)) {
+    if (JSON.stringify(a) === JSON.stringify(b)) return;
+    if (Array.isArray(a)) {
+      const byId = x => x.every(v => v && typeof v === 'object' && typeof v.id === 'string') && new Set(x.map(v => v.id)).size === x.length;
+      if ((a.length || b.length) && byId(a) && byId(b)) {
+        const ma = new Map(a.map(v => [v.id, v])), mb = new Map(b.map(v => [v.id, v]));
+        for (const [id, v] of ma) if (!mb.has(id)) out.push({ path: path.concat({ tag: v.name || id }), a: v, b: undefined, kind: 'del' });
+        for (const [id, v] of mb) { if (!ma.has(id)) out.push({ path: path.concat({ tag: v.name || id }), a: undefined, b: v, kind: 'add' }); else chgWalk(ma.get(id), v, path.concat({ tag: v.name || id }), out); }
+        return;
+      }
+      if (a.length === b.length) { for (let i = 0; i < a.length; i++) chgWalk(a[i], b[i], path.concat(i), out); return; }
+      out.push({ path, a, b }); return;
+    }
+    for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) chgWalk(a[k], b[k], path.concat(k), out);
+    return;
+  }
+  out.push({ path, a, b });
+}
+function chgList(o, n) {
+  const out = []; const names = new Map();
+  for (const h of [...(o.roster || []), ...(n.roster || [])]) if (h && h.id) names.set(h.id, h.name);
+  for (const k of new Set([...Object.keys(o), ...Object.keys(n)])) if (JSON.stringify(o[k]) !== JSON.stringify(n[k])) chgWalk(o[k], n[k], [k], out);
+  const seat = playerSeat(n) || playerSeat(o);
+  const top = { name: t('gName'), gold: t('gGold'), renown: t('gRenown') };
+  const skip = new Set(['attributes', 'hidden', 'facilities', 'adventurer', 'stock', 'built']);
+  const grouped = ['roster', 'recruits', 'stash', 'shop', 'hall', 'town', 'bonds', 'heroNotes'];
+  const nice = { hall: { level: t('hallLevel'), capstone: t('hallCap'), builds: t('buildsH'), completeDay: t('buildEnds').toLowerCase() }, town: { meter: t('townMeter'), rank: t('townRank').toLowerCase(), project: t('townProject'), grown: t('chgGrown'), growth: t('townSize') }, bonds: { value: t('bondsH').toLowerCase(), partner: t('bondPartner'), kin: t('bondKin'), mentorId: 'mentor' } };
+  return out.map(c => {
+    const key = c.path[0]; const parts = [];
+    c.path.forEach((p, i) => {
+      if (i === 0) { if (!grouped.includes(key)) parts.push(top[key] || key); return; }
+      const prev = c.path[i - 1];
+      if (p && typeof p === 'object') { parts.push(key === 'town' && seat && (p.tag === 'signature' || HT.townCost[p.tag]) ? tbName(seat.region, p.tag) : p.tag); return; }
+      if (key === 'recruits' && i === 1 && typeof p === 'number') { const r = (n.recruits || [])[p] || (o.recruits || [])[p]; parts.push(r && r.adventurer ? r.adventurer.name : '#' + (p + 1)); return; }
+      if ((key === 'bonds' || key === 'heroNotes') && i === 1) { parts.push(String(p).split('|').map(id => names.get(id) || id).join(' + ')); return; }
+      if (typeof p === 'number') { parts.push('#' + (p + 1)); return; }
+      if (skip.has(p) || (p === 'spec' && i < c.path.length - 1)) return;
+      if (prev === 'attributes' && ATTR[p]) { parts.push(ATTR[p].label); return; }
+      if (prev === 'hidden' && HID[p]) { parts.push(HID[p].label); return; }
+      if ((prev === 'facilities' || prev === 'spec') && WING[p]) { parts.push(WING[p].label + (prev === 'spec' ? ` (${t('wingSpec').toLowerCase()})` : '')); return; }
+      parts.push((nice[key] && nice[key][p]) || p);
+    });
+    const pv = v => (key === 'hall' && typeof v === 'string' && (HSPEC[v] || HCAP[v]) ? (HSPEC[v] || HCAP[v]).label : key === 'bonds' && typeof v === 'string' && names.has(v) ? names.get(v) : v);
+    const last = c.path[c.path.length - 1];
+    /* Lists the game keeps as raw records read better as names than as JSON. */
+    const fv = v => {
+      if (key === 'hall' && last === 'builds' && Array.isArray(v)) return v.length ? v.map(x => (x.target === 'hall' ? t('hallLevel') : WING[x.target] ? WING[x.target].label : x.target) + (x.spec && HSPEC[x.spec] ? ' - ' + HSPEC[x.spec].label : '') + ` (${t('buildEnds').toLowerCase()} ${x.completeDay})`).join(', ') : t('chgEmpty');
+      if (key === 'town' && last === 'project' && v && typeof v === 'object') return v.id === 'grow' ? t('townProjGrow') : (seat ? tbName(seat.region, v.id) : v.id) + (v.rank ? ` \u00B7 ${t('townRank').toLowerCase()} ${v.rank}` : '');
+      if (key === 'town' && last === 'growth' && Array.isArray(v)) return v.length ? v.map(x => HT.sizes.label[x.size] || x.size).join(', ') : t('chgEmpty');
+      return pv(v);
+    };
+    return { group: grouped.includes(key) ? key : top[key] ? 'guild' : 'other', label: parts.join(' \u00B7 ') || key, a: fv(c.a), b: fv(c.b), kind: c.kind };
+  });
+}
+function changesHtml(o, n, summary) {
+  const list = chgList(o, n); const order = ['guild', 'roster', 'recruits', 'stash', 'shop', 'hall', 'town', 'bonds', 'heroNotes', 'other']; const cap = 300;
+  const li = x => `<li style="color:var(--text-dim)">${esc(x)}</li>`;
+  const sum = `<ul class="warns" style="color:var(--text)">${(summary.length ? summary : [`${t('chgAll')}: ${list.length}`]).map(li).join('')}</ul>`;
+  if (!list.length) return sum;
+  let shown = 0; let body = '';
+  for (const gk of order) {
+    const rows = list.filter(c => c.group === gk); if (!rows.length) continue;
+    const take = rows.slice(0, Math.max(0, cap - shown)); shown += take.length;
+    body += `<h3 class="chg-h">${esc(T[S.lang].chgGroups[gk])} (${rows.length})</h3><ul class="chg">${take.map(c => `<li><b>${esc(c.label)}</b> ${c.kind === 'add' ? `<span class="chg-new">${esc(t('chgAdded'))}</span>` : c.kind === 'del' ? `<span class="chg-old">${esc(t('chgRemoved'))}</span>` : `<span class="chg-old">${esc(chgVal(c.a))}</span> → <span class="chg-new">${esc(chgVal(c.b))}</span>`}</li>`).join('')}</ul>`;
+  }
+  if (list.length > shown) body += `<p class="muted">${esc(t('chgMore').replace('{n}', list.length - shown))}</p>`;
+  return `${sum}<details class="chg-box" open><summary>${esc(t('chgAll'))} (${list.length})</summary>${body}</details>`;
+}
+function addonWarnings(gd) {
+  const out = [];
+  if (gd.hall) { const used = bedsUsed(gd), beds = hallBeds(gd.hall); if (used > beds) out.push(t('bedsOver').replace('{n}', used).replace('{b}', beds)); }
+  for (const b of Object.values(gd.bonds || {})) if (b.partner && (b.value || 0) <= -60) { out.push(t('bondBreak')); break; }
+  return out;
+}
+
+/* ----- compendium: hall and town ----- */
+function compHall() {
+  const pl = S.lang === 'pl'; const row = (cells) => `<tr>${cells.join('')}</tr>`;
+  const wings = HT.wingOrder.map(w => row([`<td class="tname u">${esc(WING[w].label)}</td>`, `<td class="desc">${esc(pl ? PL3.wings[w] : WING[w].blurb)}</td>`]) +
+    HT.specOf[w].map(s => row([`<td class="tname" style="padding-left:26px">${esc(HSPEC[s].label)}</td>`, `<td class="desc">${esc(pl ? PL3.specs[s] : HSPEC[s].blurb)}</td>`])).join('')).join('');
+  const caps = HT.capstones.map(c => row([`<td class="tname u">${esc(c[1])}</td>`, `<td class="desc">${esc(pl ? PL3.caps[c[0]] : c[2])}</td>`])).join('');
+  const town = HT.townOrder.filter(id => id !== 'signature').map(id => {
+    const c = HT.townCost[id]; const B = HT.townBase[id]; const P = PL3.town[id] || [];
+    const where = c.region ? `${t('townOnly')} ${REGION[c.region] ? REGION[c.region].name : c.region}` : t('townAnywhere');
+    let desc;
+    if (B) desc = [[1, pl ? P[0] : B[1]], [2, pl ? P[1] : B[2]], [3, pl ? P[2] : B[3]]].filter(x => x[1]).map(x => `<b>${x[0]}.</b> ${esc(x[1])}`).join('<br>');
+    else desc = esc((pl ? PL3.special[id] : HT.townSpecial[id][1]) + (c.worksAs ? ` ${t('townWorksAs')}: ${c.worksAs.map(x => HT.townBase[x][0]).join(' + ')}.` : ''));
+    return row([`<td class="tname u">${esc(B ? B[0] : HT.townSpecial[id][0])}</td>`, `<td>${esc(where)}</td>`, `<td>${esc(c.needs)}</td>`, `<td style="white-space:nowrap">${esc(c.gold)} / ${esc(c.labour)} / ${esc(c.materials)}</td>`, `<td class="desc">${desc}</td>`]);
+  }).join('');
+  const sigs = Object.keys(HT.townRegion).map(r => { const R = HT.townRegion[r]; const extra = [R.insteadOf ? (pl ? `zastępuje ${HT.townBase[R.insteadOf][0]}` : `stands in for the ${HT.townBase[R.insteadOf][0]}`) : '', R.forbidden.length ? (pl ? `w tym regionie nie ma: ${R.forbidden.map(x => HT.townBase[x][0]).join(', ')}` : `not built in this region: ${R.forbidden.map(x => HT.townBase[x][0]).join(', ')}`) : '', ...Object.keys(R.renamed).map(k => `${HT.townBase[k][0]} = ${R.renamed[k][0]}`)].filter(Boolean).join(' · ');
+    return row([`<td class="tname">${esc(REGION[r] ? REGION[r].name : r)}</td>`, `<td class="tname u">${esc(R.sig[0])}</td>`, `<td>${esc(R.meter)}</td>`, `<td class="desc">${esc(pl ? PL3.sig[r] : R.sig[1])}${extra ? `<br><span class="faint">${esc(extra)}</span>` : ''}</td>`]); }).join('');
+  const rules = pl
+    ? ['Hall ma poziomy 1-6: ' + HT.hallNames.join(', ') + '. Łóżka: 6 + 3 na poziom (The Inn +2, The Long Dormitory +3).', 'Ekipy budowlane: 1 na poziomach 1-2, 2 na 3-4, 3 na 5-6. Każda ekipa prowadzi jedną budowę naraz.', 'Koszt następnego poziomu: Hall 1000 złota x obecny poziom (14 dni), skrzydło 600 złota x (poziom + 1) (10 dni), specjalizacja 1800 złota (10 dni). Letters of Credit obniża te koszty o 15%.', 'Renoma potrzebna na kolejne poziomy Hallu: 60, 130, 230, 360, 530. Skrzydła: poziom 2 od 60, poziom 3 od 230.', 'Skrzydło na poziomie 3 wybiera jedną z dwóch specjalizacji. Gdy Hall ma poziom 6, a wszystkie skrzydła poziom 3 i specjalizację, wybierasz jedno z czterech zwieńczeń.', 'Miasto: Hold ma 4 działki, Town 6, City 8, Great City 10. Naraz trwa jeden projekt. Większe miasto mnoży koszt w złocie: x0,75 / x0,9 / x1,1 / x1,35.', 'Nowy budynek i rozbudowa miasta podnoszą miernik o 2, ranga o 1. Ranga 2 kosztuje 2x złota, ranga 3 kosztuje 3x i wymaga City. Town Hall i budynek regionalny wymagają co najmniej Town i kończą się na randze 2 (Town Hall potrzebuje do niej City).']
+    : ['The hall has levels 1-6: ' + HT.hallNames.join(', ') + '. Beds: 6 + 3 a level (The Inn +2, The Long Dormitory +3).', 'Building crews: 1 at levels 1-2, 2 at 3-4, 3 at 5-6. Each crew runs one build at a time.', 'Cost of the next level: hall 1000 gold x current level (14 days), wing 600 gold x (level + 1) (10 days), specialisation 1800 gold (10 days). Letters of Credit takes 15% off.', 'Renown needed for the next hall level: 60, 130, 230, 360, 530. Wings: level 2 from 60, level 3 from 230.', 'A wing at level 3 picks one of two specialisations. Once the hall is level 6 and every wing is level 3 and specialised, you pick one of four capstones.', 'Town: a Hold has 4 plots, a Town 6, a City 8, a Great City 10. One project runs at a time. A bigger town multiplies the gold cost: x0.75 / x0.9 / x1.1 / x1.35.', 'A new building or a growth raises the meter by 2, a rank by 1. Rank 2 costs twice the gold; rank 3 costs three times and needs a City. The Town Hall and the signature building need at least a Town and stop at rank 2 (the Town Hall needs a City for it).'];
+  const tbl = (head, body) => `<div class="panel tbl-wrap" style="margin-bottom:18px"><table class="tbl"><thead><tr>${head.map(x => `<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div class="prose"><h3 style="margin-top:0">${esc(t('compHallRules'))}</h3><ul>${rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
+    <div class="prose"><h3>${esc(t('compHallWings'))}</h3></div>${tbl([t('name'), ''], wings)}
+    <div class="prose"><h3>${esc(t('compHallCaps'))}</h3></div>${tbl([t('name'), ''], caps)}
+    <div class="prose"><h3>${esc(t('compTownB'))}</h3></div>${tbl([t('name'), t('townRegion'), t('townNeeds'), t('townCostH'), t('townRank')], town)}
+    <div class="prose"><h3>${esc(t('compTownSig'))}</h3></div>${tbl([t('townRegion'), t('name'), t('townMeter'), ''], sigs)}`;
+}
+
+/* ----- events ----- */
+/* A field's change event fires when a press on a button takes the focus away. Re-drawing the page at that moment would swallow the click,
+   so a change that arrives during a press waits until the click itself is under way. */
+let pressHold = false, pressQueue = [], pressTimer = null;
+function flushPress() { pressHold = false; clearTimeout(pressTimer); const q = pressQueue; pressQueue = []; q.forEach(el => onChange({ target: el })); }
+function onPress(e) { if (e.button === 0 && e.target.closest && e.target.closest('button')) { pressHold = true; clearTimeout(pressTimer); pressTimer = setTimeout(flushPress, 1200); } }
+function commitY(el) {
+  const gd = g(); const p = el.dataset.y.split(':'); const v = el.value; const n = Math.round(+v); let msg = '';
+  if (p[0] === 'hall' && gd.hall) {
+    const hall = gd.hall; const before = JSON.stringify(hall); const overBefore = bedsUsed(gd) - hallBeds(hall);
+    if (p[1] === 'level') { if (Number.isFinite(n)) hall.level = clamp(n, 1, HALL_MAX); }
+    else if (p[1] === 'wing' && WING[p[2]]) {
+      hall.facilities = hall.facilities || {}; hall.facilities[p[2]] = clamp(Number.isFinite(n) ? n : 0, p[2] === 'counting' ? 1 : 0, WING_MAX);
+      if (hall.facilities[p[2]] < WING_MAX && hall.spec && hall.spec[p[2]]) delete hall.spec[p[2]];
+    }
+    else if (p[1] === 'spec' && WING[p[2]]) {
+      if (v && HSPEC[v] && HSPEC[v].wing === p[2] && wingLv(hall, p[2]) >= WING_MAX) hall.spec = { ...(hall.spec || {}), [p[2]]: v };
+      else if (hall.spec) delete hall.spec[p[2]];
+    }
+    else if (p[1] === 'cap') { if (v && HCAP[v] && hallCapReady(hall)) hall.capstone = v; else if (!v) delete hall.capstone; }
+    if (hall.spec && !Object.keys(hall.spec).length) delete hall.spec;
+    const over = bedsUsed(gd) - hallBeds(hall);
+    if (over > 0 && over > overBefore) {
+      /* The game refuses to turn the day while delvers outnumber beds, and will not let a floor go in that case either. */
+      msg = t('bedsBlock').replace('{b}', hallBeds(hall)).replace('{n}', bedsUsed(gd));
+      const old = JSON.parse(before); Object.keys(hall).forEach(k => delete hall[k]); Object.assign(hall, old);
+    } else { const back = hallPruneBuilds(gd); if (back >= 0) msg = t('dropBuild').replace('{g}', back); }
+  }
+  else if (p[0] === 'hb' && gd.hall) { const b = hallBuilds(gd.hall)[+p[1]]; if (b && Number.isFinite(n)) b.completeDay = clamp(n, 0, 999999); }
+  else if (p[0] === 'town') {
+    if (p[1] === 'pick') S.townPick = v;
+    else if (p[1] === 'meter') { const town = ensureTown(gd); if (town && Number.isFinite(n)) town.meter = clamp(n, 0, 99); }
+  }
+  else if (p[0] === 'tb') {
+    const seat = playerSeat(gd), town = townOf(gd); const b = town && town.built[+p[1]];
+    if (b && seat && p[2] === 'rank' && Number.isFinite(n)) { const r = clamp(n, 1, Math.max(b.rank || 1, tbMaxRank(b.id, townSize(seat, town)))); if (r > 1) b.rank = r; else delete b.rank; }
+  }
+  else if (p[0] === 'bond-new') {
+    const h = curHero(); const o = (gd.roster || []).find(x => x.id === v);
+    if (h && o && o.id !== h.id) { gd.bonds = gd.bonds || {}; const k = bondKey(h.id, o.id); if (!gd.bonds[k]) gd.bonds[k] = { value: 0 }; }
+  }
+  else if (p[0] === 'bond') {
+    const h = curHero(); const o = (gd.roster || []).find(x => x.id === p[1]); const k = h && o ? bondKey(h.id, o.id) : null; const b = k && gd.bonds ? gd.bonds[k] : null;
+    if (b) {
+      if (p[2] === 'value') { if (Number.isFinite(n)) b.value = clamp(n, -100, 100); }
+      else if (p[2] === 'partner') {
+        if (!el.checked) delete b.partner;
+        else if (b.kin || kinByName(h, o)) msg = t('bondPartnerKin');
+        else if (partnerOf(gd, h.id, k) || partnerOf(gd, o.id, k)) msg = t('bondPartnerTaken');
+        else { b.partner = true; if ((b.value || 0) < 20) { b.value = 20; msg = t('bondPartnerMin'); } }
+      }
+      else if (p[2] === 'kin') { if (!el.checked) delete b.kin; else if (b.partner) msg = t('bondPartnerKin'); else b.kin = true; }
+      else if (p[2] === 'mentor') { if (v === h.id || v === o.id) b.mentorId = v; else delete b.mentorId; }
+    }
+  }
+  else if (p[0] === 'note') {
+    const h = curHero();
+    if (h) {
+      const r = v.trim().slice(0, 1000); const had = (gd.heroNotes && gd.heroNotes[h.id]) ?? h.notes ?? '';
+      if (r !== had) { const s = { ...(gd.heroNotes || {}) }; if (r) s[h.id] = r; else delete s[h.id]; gd.heroNotes = s; if (h.notes !== undefined) delete h.notes; }
+      el.value = r; renderSeal(); renderNav(); return;
+    }
+  }
+  renderMain(); focusBack(el.id); if (msg) toast(msg);
+}
+function addonClick(act, a) {
+  const gd = S.save ? g() : null; if (!gd) return false;
+  const idx = +a.dataset.idx; const confirmFirst = key => { if (S.confirmDel === key) { S.confirmDel = null; return true; } S.confirmDel = key; renderMain(); return false; };
+  switch (act) {
+    case 'hall-max': if (gd.hall) {
+      const hall = gd.hall; hall.level = HALL_MAX; hall.facilities = hall.facilities || {}; HT.wingOrder.forEach(w => { hall.facilities[w] = WING_MAX; });
+      hallPruneBuilds(gd); renderMain(); toast(t('hallMaxDone'));
+    } break;
+    case 'hb-finish': if (gd.hall && hallFinishBuild(gd, idx)) { hallPruneBuilds(gd); renderMain(); toast(t('buildDone')); } break;
+    case 'hb-cancel': if (gd.hall) {
+      const list = hallBuilds(gd.hall); const b = list[idx];
+      if (b) { const back = buildRefund(b, gd.day || 0); gd.gold = (gd.gold || 0) + back; setHallBuilds(gd.hall, list.filter((_, k) => k !== idx)); renderMain(); toast(t('buildStopped').replace('{g}', back)); }
+    } break;
+    case 'town-add': {
+      const seat = playerSeat(gd); if (!seat) break;
+      const town = ensureTown(gd); const avail = tbAvailable(seat, town); const id = avail.includes(S.townPick) ? S.townPick : avail[0];
+      if (!id || town.built.length >= (HT.sizes.plots[townSize(seat, town)] || 0)) break;
+      town.built.push({ id, year: gameYear(gd) }); town.meter = (town.meter || 0) + 2; S.townPick = null;
+      renderMain(); toast(`${t('townAdded')}: ${tbName(seat.region, id)}`); break;
+    }
+    case 'town-grow': {
+      const seat = playerSeat(gd); if (!seat) break;
+      const town = ensureTown(gd); if (townSize(seat, town) === 'great') { toast(t('townGrowNo')); break; }
+      town.grown = (town.grown || 0) + 1; town.meter = (town.meter || 0) + 2; const sz = townSize(seat, town);
+      town.growth = [...(town.growth || []), { size: sz, year: gameYear(gd) }];
+      renderMain(); toast(t('townGrowDone').replace('{s}', HT.sizes.label[sz])); break;
+    }
+    case 'tb-repair': { const town = townOf(gd); const b = town && town.built[idx]; if (b) { townRepair(town, b); renderMain(); } break; }
+    case 'tb-repair-all': { const town = townOf(gd); if (town) { town.built.forEach(b => { delete b.damaged; delete b.unkept; }); delete town.mending; renderMain(); toast(t('done')); } break; }
+    case 'tb-del': { const town = townOf(gd); if (town && town.built[idx] && confirmFirst('tb:' + idx)) { const b = town.built[idx]; if (town.mending && town.mending.id === b.id) delete town.mending; town.built.splice(idx, 1); renderMain(); } break; }
+    case 'tp-finish': if (townFinishProject(gd)) { renderMain(); toast(t('townProjDone')); } break;
+    case 'bond-del': { const h = curHero(); const id = a.dataset.id; if (h && gd.bonds && confirmFirst('bond:' + id)) { delete gd.bonds[bondKey(h.id, id)]; renderMain(); } break; }
+    case 'stash-tab': S.stashTab = a.dataset.id === 'shop' ? 'shop' : 'stash'; S.confirmDel = null; renderMain(); break;
+    case 'shop-new': openItemModal({ kind: 'new-shop' }, blankItem('weapon', 'melee')); break;
+    case 'shop-edit': if (gd.shop && gd.shop.stock && gd.shop.stock[idx]) openItemModal({ kind: 'shop', idx }, gd.shop.stock[idx]); break;
+    case 'shop-take': if (gd.shop && gd.shop.stock && gd.shop.stock[idx]) { gd.stash = gd.stash || []; gd.stash.push(gd.shop.stock.splice(idx, 1)[0]); S.confirmDel = null; render(); } break;
+    case 'shop-del': if (gd.shop && gd.shop.stock && gd.shop.stock[idx] && confirmFirst('shop:' + idx)) { gd.shop.stock.splice(idx, 1); render(); } break;
+    default: return false;
+  }
+  return true;
+}
+
 function onClick(e) {
   const vb = e.target.closest('[data-view]'); if (vb) { S.view = vb.dataset.view; S.confirmDel = null; render(); window.scrollTo(0, 0); return; }
   const hb = e.target.closest('[data-hero]'); if (hb) { S.heroKey = hb.dataset.hero; render(); return; }
@@ -2335,6 +3054,7 @@ function onClick(e) {
   const a = e.target.closest('[data-act]'); if (!a) return;
   const act = a.dataset.act; const h = curHero(); const gd = S.save ? g() : null;
   if (act === 'modal-veil') { if (e.target === a) closeModal(); return; }
+  if (addonClick(act, a)) return;
   switch (act) {
     case 'open': $('#fileIn').click(); break;
     case 'copy-path': copyText(SAVE_PATH, a.parentElement.querySelector('.save-path')); break;
@@ -2378,10 +3098,12 @@ function onClick(e) {
 }
 function onChange(e) {
   const el = e.target;
+  if (pressHold && el.id !== 'fileIn') { pressQueue.push(el); return; }
   if (el.id === 'fileIn') { const f = el.files && el.files[0]; if (f) loadFile(f); el.value = ''; return; }
   if (el.dataset.filter === 'q') return;
   if (el.dataset.filter) { S.traitFilter[el.dataset.filter] = el.value; $('#compBody').innerHTML = compTraits(); focusBack(el.id); return; }
   if (el.dataset.tp && el.dataset.tp !== 'q') { S.modal[el.dataset.tp] = el.value; refreshTraitList(); return; }
+  if (el.dataset.y) { commitY(el); return; }
   if (el.dataset.x) { commitX(el); return; }
   if (el.dataset.f) commitField(el);
 }
@@ -2441,6 +3163,8 @@ function boot() {
   document.addEventListener('click', onClick);
   document.addEventListener('change', onChange);
   document.addEventListener('input', onInput);
+  document.addEventListener('mousedown', onPress, true);
+  document.addEventListener('click', flushPress, true);
   document.addEventListener('mouseover', e => { const tEl = e.target.closest('[data-tip]'); if (tEl && tEl !== tipEl) showTip(tEl); else if (!tEl && tipEl) hideTip(); });
   document.addEventListener('focusin', e => {
     const row = e.target.closest('.attr-row');
